@@ -1,0 +1,203 @@
+System.Windows.Data
+
+Binding
+	- IsAsync : bool
+	- Mode : BindingMode
+	- NotifyOnSourceUpdated : bool
+	- NotifyOnTargetUpdated : bool
+	- NotifyOnValidationError : bool (based on INotifyDataErrorInfo)
+	- UpdateSourceExceptionFilter : UpdateSourceExceptionFilterCallback
+	- UpdateSourceTrigger : UpdateSourceTrigger
+	- ValidatesOnDataErrors : bool (based on IDataErrorInfo)
+	- ValidatesOnExceptions : bool (based on throwing exception)
+	- ValidationRules : Collection<ValidationRule>
+	
+	- AddSourceUpdatedHandler(DependencyObject element, EventHandler<DataTransferEventArgs> handler) : void
+	- AddTargetUpdatedHandler(DependencyObject element, EventHandler<DataTransferEventArgs> handler) : void
+	- RemoveSourceUpdatedHandler(DependencyObject element, EventHandler<DataTransferEventArgs> handler) : void
+	
+	- BindingGroupName : string
+	- FallbackValue : object
+	- StringFormat : string
+	- TargetNullValue : object
+
+
+delegate object UpdateSourceExceptionFilterCallback(object bindExpression, Exception exception)
+return null (to ignore the exception), or ValidationError
+
+
+BindingMode (enum)
+	- Default = 4
+	- OneTime
+	- OneWay
+	- OneWayToSource
+	- TwoWay = 0
+
+
+UpdateSourceTrigger (enum)
+	- Default = 0
+	- Explicit
+	- LostFocus
+	- PropertyChanged
+ 
+
+==============================================================
+
+
+System.Windows.Controls
+
+Validation
+	- ErrorEvent : EventHandler<ValidationErrorEventArgs>
+	- ErrorsProperty : ReadOnlyObservableCollection<ValidationError>
+	- ErrorTemplateProperty : ControlTemplate (with AdornedElementPlaceholder)
+	- HasErrorProperty : bool
+	
+	- AddErrorHandler(DependencyObject element,	EventHandler<ValidationErrorEventArgs> handler)
+	- ClearInvalid(BindingExpressionBase bindingExpression)
+	- GetErrors(SDependencyObject element): ReadOnlyObservableCollection<ValidationError>
+	- GetHasError(DependencyObject element) : bool
+	- MarkInvalid(BindingExpressionBase bindingExpression, ValidationError validationError) : void
+	- RemoveErrorHandler(DependencyObject element, EventHandler<ValidationErrorEventArgs> handler) : void
+	- SetErrorTemplate(DependencyObject element, ControlTemplate value) : void
+
+
+ValidationError
+	- BindingInError : object (BindingExpression or MultiBindingExpression)
+	- ErrorContent : object
+	- Exception : Exception
+	- RuleInError : ValidationRule
+
+
+ValidationErrorEventAction (enum)
+	- Added
+	- Removed
+
+
+ValidationErrorEventArgs
+	- Action : ValidationErrorEventAction
+	- Error : ValidationError
+
+
+ValidationResult
+	- ErrorContent : object
+	- IsValid : bool
+	- ValidResult : ValidationResult
+	- ValidationResult(bool isValid, object errorContent)
+
+
+ValidationRule (abstract)
+	- ValidatesOnTargetUpdated : bool
+	- ValidationStep : ValidationStep
+	- Validate(object value, CultureInfo cultureInfo) : ValidationResult (abstract)
+
+
+DataErrorValidationRule : ValidationRule (sealed)
+
+ExceptionValidationRule : ValidationRule (sealed)
+
+
+ValidationStep (enum)
+	- CommittedValue
+	- ConvertedProposedValue
+	- RawProposedValue
+	- UpdatedValue
+  
+
+==============================================================
+
+
+System.ComponentModel
+
+IDataErrorInfo
+	- Error : string
+	- this[string columnName] : string
+
+
+INotifyDataErrorInfo
+	- GetErrors(string propertyName) : IEnumerable
+	- HasError : bool
+	- ErrorsChanged : EventHandler<DataErrorsChangedEventArgs>
+
+
+DataErrorsChangedEventArgs
+	- DataErrorsChangedEventArgs(string propertyName)
+
+
+==============================================================
+
+System.ComponentModel.DataAnnotations
+
+ValidationAttribute
+	- ErrorMessage : string
+	- ErrorMessageResourceName : string
+	- ErrorMessageResourceType : System.Type
+	
+	- FormatErrorMessage(string name) : string
+	- GetValidationResult(object value, ValidationContext validationContext) : ValidationResult
+	- IsValid(object value) : bool
+	- Validate(object value, string name) : void
+	- Validate(object value, ValidationContext validationContext) : void
+
+
+CustomValidationAttribute : ValidationAttribute
+	- CustomValidationAttribute(System.Type validatorType, string method)
+	
+
+RangeAttribute : ValidationAttribute
+	- RangeAttribute(double minimum, double maximum)
+	- RangeAttribute(int minimum, int maximum)
+	- RangeAttribute(System.Type type, string minimum, string maximum)
+
+
+RegularExpressionAttribute : ValidationAttribute
+	- RegularExpressionAttribute(string pattern)
+
+
+RequiredAttribute : ValidationAttribute
+	- AllowEmptyString : bool
+
+
+StringLengthAttribute : ValidationAttribute
+	- StringLengthAttribute(int maximumLength)
+
+
+ValidationContext
+	- ValidationContext(object instance, 
+		IServiceProvider serviceProvider, 
+		IDictionary<object, object> items)
+	- DisplayName : string
+	- MemberName : string
+
+
+Validator
+	- TryValidateObject(object instance, 
+		ValidationContext validationContext, 
+		ICollection<ValidationResult> validationResults) : bool
+	- TryValidateObject(object instance, 
+		ValidationContext validationContext, 
+		ICollection<ValidationResult> validationResults, 
+		bool validateAllProperties) : bool
+	- TryValidateProperty(object value, 
+		ValidationContext validationContext, 
+		ICollection<ValidationResult> validationResults) : bool
+	- TryValidateValue(object value, 
+		ValidationContext validationContext, 
+		ICollection<ValidationResult> validationResults, 
+		IEnumerable<ValidationAttribute> validationAttributes) : bool
+	- ValidateObject(object instance, ValidationContext validationContext) : void
+	- ValidateObject(object instance, ValidationContext validationContext, bool validateAllProperties) : void
+	- ValidateProperty(object value, ValidationContext validationContext) : void
+	- ValidateValue(object value, 
+		ValidationContext validationContext, 
+		IEnumerable<ValidationAttribute> validationAttributes) : void
+
+
+ValidationResult
+	- ErrorMessage : string
+	- MemberNames : IEnumerable<string>
+	- Success : ValidationResult
+
+
+
+
+

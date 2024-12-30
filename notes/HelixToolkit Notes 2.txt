@@ -1,0 +1,98 @@
+Generate random visual
+	- scale (bound)
+	- translation (bound)
+	- rotation
+
+Visual
+	- ArrowVisual3D
+	- BoundingBoxVisual3D
+	- BoundingBoxWireFrameVisual3D
+	- BoxVisual3D
+	- CategorizedColorAxis
+	- ClonedVisual3D
+	- CoordinateSystemVisual3D
+	- CubeVisual3D
+	- Expander3D
+	- Exploder3D
+	- GridLinesVisual3D
+	- FileModelVisual3D
+	- LightVisual3D
+	- PipeVisual3D
+	- PointsVisual3D
+	- QuadVisual3D
+	- RangeColorAxis
+	- RectangleVisual3D
+	- SortingVisual3D
+	- SphereVisual3D
+	- TubeVisual3D
+	- ViewCubeVisual3D
+
+Light
+	- DefaultLights
+	- DirectionalHeadLight
+	- LightVisual3D
+	- SpotHeadLight
+	- SunLight
+	- ThreePointLights
+
+	
+Selection
+	- CombinedSelectionCommand
+	- ModelsSelectedByPointEventArgs
+	- ModelsSelectedByRectangleEventArgs
+	- ModelsSelectedEventArgs
+	- PointSelectionCommand
+	- RectangleSelectionCommand
+	- SelectionCommand
+	- SelectionHitMode
+	- VisualsSelectedByPointEventArgs
+	- VisualsSelectedByRectangleEventArgs
+	- VisualsSelectedEventArgs
+	
+	
+Manipulator
+	- BindableRotateManipulator
+	- BindableTranslateManipulator
+	- CombinedManipulator
+	- RotateManipulator
+	- TranslateManipulator
+
+
+Viewport
+	- CameraController
+	- CameraHelper
+	- CameraSetting
+	- HelixViewport3D
+	- Viewport3DHelper
+	- Viewport3DHelper.HitResult
+	- Viewport3DHelper.RectangleHitResult
+
+
+Geometry
+	- BoundingSphere
+	- CohenSutherlandClipping
+	- ElementSortingHelper
+	- LineGeometryBuilder
+	- LineSegment
+	- Model3DHelper
+	- Plane3D
+	- Point3DExtensions
+	- PointGeometryBuilder
+	- Polygon
+	- Polygon3D
+	- Ray3D
+	- Rect3DExtensions
+	- Transform3DHelper
+	- Triangle
+	- Vector3DExtensions
+	- Visual3DHelper
+
+
+Utility
+	- BrushHelper
+	- ColorHelper
+	- DoubleKeyDictionary<K, T, V>
+	- DoubleKeyPairValue<K, T, V>
+	- InputBindingX
+	- MaterialHelper
+	- Materials

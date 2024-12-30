@@ -1,0 +1,352 @@
+System.Windows.Media.Media3D
+
+// Light object that applies light to objects uniformly, regardless of their shape.
+AmbientLight 
+
+// Represents a 3-D rotation of a specified angle about a specified axis.
+AxisAngleRotation3D : Rotation3D
+
+// Represents a container for Visual3D objects.
+ContainerUIElement3D : System.Windows.UIElement3D
+
+
+DiffuseMaterial : Material
+
+
+DirectionalLight : Light
+
+EmissiveMaterial : Material
+
+// Provides 2-D to 3-D transformation support.
+GeneralTransform2DTo3D : System.Windows.Freezable
+
+// Provides generalized transformation support for 3-D objects.
+GeneralTransform3D (abstract)
+
+// Represents an ordered collection of GeneralTransform3D objects.
+GeneralTransform3DCollection 
+
+// Represents a GeneralTransform3D that is a composite of the transforms in its GeneralTransform3DCollection.
+GeneralTransform3DGroup : GeneralTransform3D
+
+// Provides 3-D to 2-D transformation support.
+GeneralTransform3DTo2D 
+
+HitTestParameters3D
+
+Light : Model3D
+
+Material 
+
+MaterialCollection 
+
+MaterialGroup : Material
+
+Matrix3D (struct)
+	- Multiply(Matrix3D matrix1, SMatrix3D matrix2) : Matrix3D
+	- Prepend(Matrix3D matrix)
+	- Rotate(Quaternion quaternion)
+	- RotateAt(Quaternion quaternion, Point3D center)
+	- RotateAtPrepend(Quaternion quaternion, Point3D center)
+	- RotatePrepend(Quaternion quaternion)
+	- Scale(Vector3D scale)
+	- ScaleAt(Vector3D scale, Point3D center)
+	- ScaleAtPrepend(Vector3D scale, Point3D center)
+	- ScalePrepend(Vector3D scale)
+	- SetIdentity()
+	- Transform(Point3D point) : Point3D
+	- Transform(Point3D[] points)
+	- Transform(Point4D point) : Point4D
+	- Transform(Point4D[] points)
+	- Transform(Vector3D vector) : Vector3D
+	- Transform(Vector3D[] vectors)
+	- Translate(Vector3D offset)
+	- TranslatePrepend(Vector3D offset)
+	- Determinant : double
+	- HasInverse : bool
+	- Identity : Matrix3D (static)
+	- IsAffine : bool
+	- IsIdentity : bool
+	- OffsetX : double
+	- OffsetY : double
+	- OffsetZ : double
+
+
+MatrixCamera : Camera
+	- ViewMatrix : Matrix3D
+
+
+MatrixTransform3D : Transform3D
+	- MatrixTransform3D(Matrix3D matrix)
+
+
+Point3D (struct)
+	- Add(Point3D point, Vector3D vector) : Point3D (static)
+	- Multiply(Point3D point, Matrix3D matrix) : Point3D (static)
+	- Offset(double offsetX, double offsetY, double offsetZ)
+	- Point3D(double x, double y, double z)
+	- Subtract(Point3D point1, Point3D point2) : Point3D (static)
+	- Subtract(Point3D point, Vector3D vector) : Point3D (static)
+	- explicit operator Point4D(Point3D point)
+	- explicit operator Vector3D(Point3D point)
+	- operator !=(Point3D point1, Point3D point2) : Point3D
+	- operator -(Point3D point1, Point3D point2) : Point3D
+	- operator -(Point3D point, Vector3D vector) : Point3D
+	- operator *(Point3D point, Matrix3D matrix) : Point3D
+	- operator +(Point3D point, Vector3D vector) : Point3D
+	- operator ==(Point3D point1, Point3D point2) : bool
+
+
+Point3DCollection : System.Windows.Freezable
+	- Point3DCollection.Add(Point3D)
+	- Clear()
+	- Clone()
+	- CloneCurrentValue() : Point3DCollection
+	- Contains(Point3D value) : bool
+	- CopyTo(Point3D[] array, int index)
+	- GetEnumerator() : Point3DCollection.Enumerator
+	- IndexOf(Point3D value) : int
+	- Insert(int index, Point3D value)
+	- Point3DCollection(IEnumerable<Point3D> collection)
+	- Remove(Point3D value) : bool
+	- RemoveAt(int index)
+	- Count : int
+	- this[int index] : Point3D
+
+
+Point4D (struct)
+
+PointLight : PointLightBase
+
+PointLightBase : Light
+
+Quaternion (struct)
+	- Quaternion.Add(Quaternion, Quaternion)
+	- Multiply(Quaternion left, Quaternion right) : Quaternion (static)
+	- Normalize()
+	- Quaternion(double x, double y, double z, double w)
+	- Quaternion(Vector3D axisOfRotation, double angleInDegrees)
+	- Subtract(Quaternion left, Quaternion right) : Quaternion (static)
+	- operator !=(Quaternion quaternion1, Quaternion quaternion2) : bool
+	- operator -(Quaternion left, Quaternion right) : Quaternion
+	- operator *(Quaternion left, Quaternion right) : Quaternion
+	- operator +(Quaternion left, Quaternion right) : Quaternion
+	- operator ==(Media3D.Quaternion quaternion1, Quaternion quaternion2) : bool
+	- Angle : double
+	- Axis : Vector3D
+	- Identity : Quaternion (static)
+	- IsIdentity : bool
+	- IsNormalized : bool
+
+QuaternionRotation3D : Rotation3D
+	- QuaternionRotation3D(Quaternion quaternion)
+	- Quaternion : Quaternion
+
+RayHitTestParameters : HitTestParameters3D
+	- Direction : Vector3D
+	- Origin : Point3D
+
+RayHitTestResult : HitTestResult (abstract)
+	- DistanceToRayOrigin : double (abstract)
+	- ModelHit : Model3D
+	- PointHit : Point3D (abstract)
+	- VisualHit : Visual3D
+
+RayMeshGeometry3DHitTestResult : RayHitTestResult
+	- DistanceToRayOrigin : double
+	- MeshHit : MeshGeometry3D
+	- PointHit : Point3D
+	- VertexIndex1 : int
+	- VertexIndex2 : int
+	- VertexIndex3 : int
+	- VertexWeight1 : double
+	- VertexWeight2 : double
+	- VertexWeight3 : double
+
+Rect3D (struct)
+	- Contains(double, double, double) : bool
+	- Contains(Point3D point) : bool
+	- Contains(Rect3D rect) : bool
+	- Intersect(Rect3D rect)
+	- Intersect(Rect3D rect1, Rect3D rect2) : Rect3D (static)
+	- IntersectsWith(Rect3D rect) : bool
+	- Offset(double offsetX, double offsetY, double offsetZ) : bool
+	- Offset(Rect3D rect, Vector3D offsetVector) : Rect3D (static)
+	- Offset(SVector3D offsetVector)
+	- Rect3D(double x, double y, double z, double sizeX, double sizeY, double sizeZ)
+	- Rect3D(Point3D location, Size3D size)
+	- Union(Point3D point)
+	- Union(Rect3D)
+	- Union(Rect3D rect, Point3D point) : Rect3D (static)
+	- Union(Rect3D rect, Point3D point) : Rect3D (static)
+	- Union(Rect3D rect1, Rect3D rect2) : Rect3D (static)
+	- operator !=(Rect3D rect1, Rect3D rect2) : bool
+	- operator ==(Rect3D rect1, Rect3D rect2) : bool
+	- Empty : Rect3D (static)
+	- IsEmpty : bool
+	- Location : Point3D
+	- Size : Size3D
+	- SizeX : double
+	- SizeY : double
+	- SizeZ : double
+	- X : double
+	- Y : double
+	- Z : double
+
+RotateTransform3D : AffineTransform3D
+	- Clone() : RotateTransform3D
+	- CloneCurrentValue() : RotateTransform3D
+	- RotateTransform3D(Rotation3D rotation)
+	- RotateTransform3D(Rotation3D rotation, double centerX, double centerY, double centerZ)
+	- RotateTransform3D(Rotation3D rotation, Point3D center)
+	- CenterX : double
+	- CenterY : double
+	- CenterZ : double
+	- Rotation : Rotation3D
+	- Value : Matrix3D
+
+Rotation3D (abstract)
+
+ScaleTransform3D : AffineTransform3D
+	- Clone() : ScaleTransform3D
+	- CloneCurrentValue() : ScaleTransform3D
+	- ScaleTransform3D(double scaleX, double scaleY, double scaleZ)
+	- ScaleTransform3D(double scaleX, double scaleY, double scaleZ, 
+		double centerX, double centerY, double centerZ)
+	- ScaleTransform3D(Vector3D scale)
+	- ScaleTransform3D(Vector3D scale, Point3D center)
+	- CenterX : double
+	- CenterY : double
+	- CenterZ : double
+	- ScaleX : double
+	- ScaleY : double
+	- ScaleZ : double
+	- Value : Matrix3D
+
+Size3D (struct)
+	- Size3D(double, double, double)
+	- explicit operator Point3D(Size3D size)
+	- explicit operator Vector3D(Size3D size)
+	- operator !=(Size3D size1, Size3D size2) : bool
+	- operator ==(Size3D size1, Size3D size2) : bool
+	- Empty : Size3D
+	- IsEmpty : bool
+	- X : double
+	- Y : double
+	- Z : double
+
+SpecularMaterial : Material
+
+SpotLight : PointLightBase
+
+Transform3D : GeneralTransform3D (abstract)
+
+Transform3DCollection
+	- Add(Transform3D value)
+	- Clear()
+	- Clone()
+	- CloneCurrentValue() : Transform3DCollection
+	- Contains(Point3D value) : bool
+	- CopyTo(Transform3D[] array, int index)
+	- GetEnumerator() : Transform3DCollection.Enumerator
+	- IndexOf(Transform3D value) : int
+	- Insert(int index, Transform3D value)
+	- Remove(Transform3D value) : bool
+	- RemoveAt(int index)
+	- Transform3DCollection(IEnumerable<Transform3D> collection)
+	- Count : int
+	- this[int index] : Transform3D
+
+Transform3DGroup : Transform3D
+	- Clone()
+	- CloneCurrentValue() : Transform3DGroup
+	- Children : Transform3DCollection
+	- Value : Matrix3D
+
+TranslateTransform3D 
+	- Clone()
+	- CloneCurrentValue() : TranslateTransform3D
+	- TranslateTransform3D(double offsetX, double offsetY, double offsetZ)
+	- TranslateTransform3D(Vector3D offset)
+	- OffsetX : double
+	- OffsetY : double
+	- OffsetZ : double
+	- Value : Matrix3D
+
+Vector3D (struct)
+	- Add(Vector3D vector, Point3D point) : Point3D (static)
+	- Add(Vector3D vector1, Vector3D vector2) : Vector3D (static)
+	- AngleBetween(Vector3D vector1, Vector3D vector2) : double (static)
+	- CrossProduct(Vector3D vector1, Vector3D vector2) : Vector3D (static)
+	- Divide(Vector3D vector, double scalar) : Vector3D (static)
+	- DotProduct(Vector3D vector1, Vector3D vector2) : double (static)
+	- Multiply(double scalar, Vector3D vector) : Vector3D (static)
+	- Multiply(Vector3D vector, double scalar) : Vector3D (static)
+	- Multiply(Vector3D vector, Matrix3D matrix) : Vector3D (static)
+	- Negate()
+	- Normalize()
+	- Subtract(Vector3D vector, Point3D point) : Point3D (static)
+	- Subtract(Vector3D vector1, Vector3D vector2) : Vector3D (static)
+	- Vector3D(double x, double y, double z)
+	- explicit operator Point3D(Vector3D vector)
+	- explicit operator Size3D(Vector3D vector)
+	- operator !=(Vector3D vector1, Vector3D vector2) : bool
+	- operator -(Vector3D vector) : Vector3D
+	- operator -(Vector3D vector, Point3D point) : Point3D
+	- operator -(Vector3D vector1, Vector3D vector2) : Vector3D
+	- operator *(double scalar, Vector3D vector) : Vector3D
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

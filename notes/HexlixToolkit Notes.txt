@@ -1,0 +1,481 @@
+System.Windows.Controls.Viewport3D
+System.Windows.Media.Brush
+System.Windows.Media.Imaging.BitmapSource
+System.Windows.Media.Media3D.Camera
+System.Windows.Media.Media3D.Point3D
+System.Windows.Media.Media3D.RayMeshGeometry3DHitTestResult
+System.Windows.Media.Media3D.Vector3D
+System.Windows.Point
+System.Windows.Rect
+System.Windows.UIElement3D
+
+
+// A visual element that shows an arrow.
+ArrowVisual3D
+
+// Represents a visual element containing a manipulator that can rotate around an axis.
+BindableRotateManipulator : HelixToolkit.Wpf.Manipulator
+
+// Represents a visual element that contains a manipulator that can translate along an axis.
+BindableTranslateManipulator : HelixToolkit.Wpf.Manipulator
+
+// Exports a Controls.Viewport3D to a .bmp, .png or .jpg file.
+BitmapExporter
+
+// A visual element that shows a wireframe for the specified bounding box.
+BoundingBoxVisual3D : ModelVisual3D
+
+// A visual element that shows a wireframe for the specified bounding box.
+BoundingBoxWireFrameVisual3D
+
+// Represents a bounding sphere.
+BoundingSphere
+	- BoundingSphere(Point3D center, double diameter)
+	- Contains(Point3D point) : bool
+	- CreateFromPoints(IEnumerable<SPoint3D> points) : BoundingSphere
+	- CreateFromRect3D(Rect3D rect) : BoundingSphere
+	- CreateMerged(BoundingSphere original, BoundingSphere additional) : BoundingSphere
+	- DistanceFrom(Point3D point) : double
+	- Intersects(BoundingSphere sphere) : bool
+	- RayIntersection(Ray3D ray, out Point3D[] result) : bool
+
+// The box is aligned with the local X, Y and Z coordinate system Use a transform to orient the box in other directions.
+BoxVisual3D
+
+// Provides methods that creates brushes.
+BrushHelper
+
+// Provides a control that manipulates the camera by mouse and keyboard gestures.
+CameraController 
+
+// Provides extension methods for Media3D.Camera derived classes.
+CameraHelper
+
+// Represents a camera state.
+CameraSetting
+
+CategorizedColorAxis (Control)
+
+// visual element that clones all the children of another visual element.
+ClonedVisual3D 
+
+// Provides line clipping against a rectangle.
+CohenSutherlandClipping
+	- ClipLine(ref double x0, ref double y0, ref double x1, ref double y1) : bool
+	- CohenSutherlandClipping(double xmin, double xmax, double ymin, double ymax)
+	- IsInside(double x, double y) : bool
+
+// Helper methods for System.Windows.Media.Color.
+ColorHelper
+
+// Represents a visual element that shows translation and rotation manipulators.
+CombinedManipulator : ModelVisual3D
+	- Bind(ModelVisual3D source)
+	- UnBind()
+
+// Provides a command that raises an event returning the hit models 
+// at the mouse location when the mouse button is clicked
+// Provides a command that shows a rectangle when the mouse is dragged and raises 
+// an event returning the models contained in the rectangle when the mouse button is released.
+CombinedSelectionCommand : SelectionCommand
+	- CombinedSelectionCommand(Viewport3D viewport, 
+		System.EventHandler<ModelsSelectedEventArgs> modelsSelectedEventHandler)
+	- CombinedSelectionCommand(Viewport3D viewport, 
+		System.EventHandler<.ModelsSelectedEventArgs> modelsSelectedEventHandler, 
+		System.EventHandler<VisualsSelectedEventArgs> visualsSelectedEventHandler)
+	- CombinedSelectionCommand(Viewport3D viewport, 
+		System.EventHandler<VisualsSelectedEventArgs> visualsSelectedEventHandler)
+	- AllowAutoSetSelectionHitMode : bool
+	- FillRectangleBrush : Brush
+
+// A visual element that shows a coordinate system with arrows in the X, Y and Z directions.
+CoordinateSystemVisual3D 
+
+// A visual element that displays a cube.
+CubeVisual3D 
+
+// A visual element that contains a light model containing 4 directional lights.
+DefaultLights (ModelVisual3D)
+
+// Represents a directional head light.
+DirectionalHeadLight (ModelVisual3D)
+
+// A double key dictionary.
+DoubleKeyDictionary<K, T, V>
+
+// Represents two keys and a value.
+DoubleKeyPairValue<K, T, V>
+
+// Sorts element by opacity and distance from camera.
+ElementSortingHelper
+	- AlphaSort(Point3D cameraPosition, 
+		Media3D.Model3DCollection models, 
+		Media3D.Transform3D worldTransform)
+	- GetDistanceSquared(Point3D position, GeometryModel3D model) : double
+	- GetDistanceSquared(Point3D position, Visual3D visual) : double
+	- IsTransparent(Brush brush) : bool
+	- IsTransparent(GeometryModel3D gm3D) : bool
+	- IsTransparent(Media3D.Material material) : bool
+	- IsTransparent(Model3D model) : bool
+	- IsTransparent(Visual3D v) : bool
+	- SortModel(Point3D position, IList<Visual3D> model)
+
+// A visual element that translates all children relative to the specified origin.
+Expander3D : ModelVisual3D
+
+// A visual element that transforms all child elements as an explosion.
+Exploder3D : System.Windows.Media.Media3D.ModelVisual3D
+
+// A visual element that shows a set of grid lines.
+GridLinesVisual3D 
+
+// A visual element that shows a model loaded from a file.
+FileModelVisual3D : System.Windows.UIElement3D
+
+// A control that contains a System.Windows.Controls.Viewport3D 
+// and a HelixToolkit.Wpf.HelixViewport3D.CameraController.
+HelixViewport3D
+	- ChangeCameraDirection(Media3D.Vector3D newDirection, 
+		[double animationTime = 0])
+	- FindNearest(Windows.Point pt, 
+		out Media3D.Point3D pos, 
+		out Media3D.Vector3D normal, 
+		out DependencyObject obj) : bool
+
+// Input binding supporting binding the Gezture.
+InputBindingX : System.Windows.Input.InputBinding
+
+// A visual element that shows a model for the specified light.
+LightVisual3D 
+
+Linear (mx+b) converter.
+LinearConverter
+
+// Builds a mesh geometry for a collection of line segments.
+LineGeometryBuilder 
+	- LineGeometryBuilder(Visual3D visual)
+	- CreatePositions(IList<Media3D.Point3D> points, 
+		[double thickness = 1], 
+		[double depthOffset = 0], 
+		[HelixToolkit.Wpf.CohenSutherlandClipping clipping = null]) : Media3D.Point3DCollection
+
+// Represents a line segment in two-dimensional space.
+LineSegment (struct)
+
+// A visual element that contains a set of line segments. 
+// The thickness of the lines is defined in screen space.
+LinesVisual3D
+	- Points : Media3D.Point3DCollection
+
+// Provides methods that creates materials.
+MaterialHelper
+
+// Contains a set of predefined materials.
+Materials
+
+// Provides extension methods for Media3D.Model3D objects.
+Model3DHelper
+	- GetTransform(this Model3D current, 
+		Model3D model, 
+		Media3D.Transform3D parentTransform) : Media3D.GeneralTransform3D
+	- Traverse<T>(this Model3D model, 
+		System.Action<T, Media3D.Transform3D> action)
+	- Traverse<T>(this Model3D model, 
+		Media3D.Transform3D transform, 
+		System.Action<T, Media3D.Transform3D> action)
+	- Traverse<T>(this Model3D model, 
+		Visual3D visual, 
+		Media3D.Transform3D transform, 
+		System.Action<T, Visual3D, Media3D.Transform3D> action)
+
+ModelsSelectedByPointEventArgs : ModelsSelectedEventArgs
+	-  Position : Windows.Point
+
+ModelsSelectedByRectangleEventArgs : ModelsSelectedEventArgs
+	- Rectangle : Windows.Rect
+
+ModelsSelectedEventArgs : System.EventArgs
+	- AreSortedByDistanceAscending : bool
+	- SelectedModels : IList<Model3D> 
+
+// A visual element that shows a pipe between two points.
+PipeVisual3D 
+
+// Represents a plane in three-dimensional space.
+Plane3D
+	- DistanceTo(Point3D point) : double
+	- Intersects(Rect3D rect) : PlaneIntersectionType
+	- LineIntersection(Point3D la, Point3D lb) : Point3D?
+	- Plane3D(Point3D position, Vector3D normal)
+	- Project(Point3D point) : Point3D
+
+// Extension methods for Point3D.
+Point3DExtensions
+	- DistanceTo(this Point3D p1, Point3D p2) : double
+	- DistanceToPlane(this Point3D point, Point3D planePosition, Vector3D planeNormal) : double
+	- DistanceToSquared(this Point3D p1, Point3D p2) : double
+	- Multiply(this Point3D p, double d) : Point3D
+	- ProjectOnPlane(this Point3D point, Point3D planePosition, Vector3D planeNormal) : Point3D
+	- Sum(params Point3D[] points) : Point3D
+	- ToVector3D(this Point3D n) : Vector3D
+
+// Builds a mesh geometry for a collection of points.
+PointGeometryBuilder
+	- CreatePositions(IList<Point3D> points, 
+		[double size = 1], 
+		[double depthOffset = 0]) : Media3D.Point3DCollection
+	- PointGeometryBuilder(Visual3D visual)
+
+// Provides a command that raises an event returning the hit models 
+// at the mouse location when the mouse button is clicked.
+PointSelectionCommand
+	- PointSelectionCommand(Viewport3D viewport, 
+		System.EventHandler<ModelsSelectedEventArgs> modelsSelectedEventHandler)
+	- PointSelectionCommand(Viewport3D viewport, 
+		System.EventHandler<ModelsSelectedEventArgs> modelsSelectedEventHandler,
+		System.EventHandler<VisualsSelectedEventArgs> visualsSelectedEventHandler)
+	- PointSelectionCommand(Viewport3D viewport, 
+		System.EventHandler<VisualsSelectedEventArgs> visualsSelectedEventHandler)
+
+// A visual element that contains a set of points. 
+// The size of the points is defined in screen space.
+PointsVisual3D 
+
+// Represents a 2D polygon
+Polygon
+
+// Represents a 3D polygon.
+Polygon3D
+
+// Exports the 3D visual tree to a PovRay input file.
+PovRayExporter : HelixToolkit.Wpf.Exporter<System.IO.StreamWriter>
+
+// A visual element that displays a quadrilateral polygon.
+QuadVisual3D 
+
+// Provides a color axis for a numeric value range.
+RangeColorAxis (Control)
+
+// Represents a ray in three-dimensional space.
+Ray3D
+	- GetNearest(Point3D p3) : Point3D
+	- PlaneIntersection(Point3D position, Vector3D normal) : Point3D?
+	- PlaneIntersection(Point3D position, 
+		Vector3D normal, 
+		out Point3D intersection) : bool
+	- Ray3D(Point3D p0, Point3D p1)
+	- Ray3D(Point3D o, Vector3D d)
+	- Direction : Vector3D
+	- Origin : Point3D
+
+Rect3DExtensions
+	- Expand(this Rect3D rect3d, double expand) : Rect3D
+	- GetCenter(this Rect3D rect) : Point3D
+	- Intersects(this Rect3D rect, 
+		Point3D planePosition, 
+		Vector3D planeNormal) : PlaneIntersectionType
+	- Merge(this IEnumerable<Rect3D> rects) : Rect3D
+
+// Provides a command that shows a rectangle when the mouse is dragged 
+// and raises an event returning the models contained in the rectangle 
+// when the mouse button is released.
+RectangleSelectionCommand : SelectionCommand
+	- FillRectangleBrush : Media.Brush
+	- RectangleSelectionCommand(Viewport3D viewport, 
+		EventHandler<ModelsSelectedEventArgs> modelsSelectedEventHandler)
+	- RectangleSelectionCommand(Viewport3D viewport, 
+		EventHandler<ModelsSelectedEventArgs> modelsSelectedEventHandler, 
+		EventHandler<VisualsSelectedEventArgs> visualsSelectedEventHandler)
+	- RectangleSelectionCommand(Viewport3D viewport, 
+		EventHandler<VisualsSelectedEventArgs> visualsSelectedEventHandler)
+
+RectangleVisual3D
+
+RotateManipulator (UIElement3D)
+
+// Provides an abstract base class for mouse selection commands.
+SelectionCommand
+	- CanExecute(object parameter) : bool
+	- Completed(ManipulationEventArgs e)
+	- Delta(ManipulationEventArgs e)
+	- Execute(object parameter)
+	- GetCursor() : Cursor
+	- OnCanExecutedChanged(object sender, EventArgs e)
+	- OnModelsSelected(ModelsSelectedEventArgs e)
+	- OnMouseDown(object)
+	- OnMouseMove(object sender, MouseEventArgs e)
+	- OnMouseUp(object sender, MouseButtonEventArgs e)
+	- OnVisualsSelected(VisualsSelectedEventArgs e)
+	- SelectionCommand(Viewport3D viewport, 
+		EventHandler<ModelsSelectedEventArgs> eventHandlerModels, 
+		EventHandler<VisualsSelectedEventArgs> eventHandlerVisuals)
+	- Started(ManipulationEventArgs e)
+	- MouseDownPoint : Windows.Point
+	- SelectionHitMode : SelectionHitMode
+	- Viewport : Viewport3D
+
+SelectionHitMode (enum)
+	Inside
+	Touch
+
+// A visual element that sorts the children by distance from camera.
+SortingVisual3D 
+
+SpatialTextItem
+
+// A visual element that shows a sphere defined by center and radius.
+SphereVisual3D 
+
+// Represents a spot headlight.
+SpotHeadLight 
+
+// A visual element that contains a "sunlight" light model.
+SunLight 
+
+// Creates text label models or visuals.
+TextCreator
+	- CreateTextLabel3D(string text, 
+		Brush textColor, 
+		bool isDoubleSided, 
+		double height, 
+		Point3D center, 
+		Vector3D textDirection, 
+		Vector3D updirection) : ModelVisual3D
+	- CreateTextLabelModel3D(string text, 
+		Brush textColor, 
+		bool isDoubleSided, 
+		double height, 
+		Point3D center, 
+		Vector3D textDirection, 
+		Vector3D updirection) : GeometryModel3D
+
+// Provides a visual element that shows a collection of text items.
+TextGroupVisual3D 
+
+// A visual element that shows text.
+TextVisual3D 
+
+// A visual element that contains a three point light setup.
+ThreePointLights 
+
+Transform3DHelper
+
+TranslateManipulator 
+
+// Represents a triangle in two-dimensional space.
+Triangle (struct)
+
+// A visual element that shows a tube along a specified path.
+TubeVisual3D 
+
+Vector3DExtensions
+	- FindAnyPerpendicular(this Vector3D n) : Vector3D
+	- ToPoint3D(this Vector3D n) : Point3D
+
+ViewCubeVisual3D 
+
+// Provides extension methods for System.Windows.Controls.Viewport3D
+Viewport3DHelper
+	- FindHits(this Viewport3D viewport, 
+		Windows.Point position) : IList<Viewport3DHelper.HitResult>
+	- FindHits(this Viewport3D viewport, 
+		Windows.Rect rectangle, 
+		SelectionHitMode mode) : IEnumerable<Viewport3DHelper.RectangleHitResult> 
+	- FindNearest(this Viewport3D viewport, 
+		Windows.Point position, 
+		out Media3D.Point3D point, 
+		out Media3D.Vector3D normal, 
+		out DependencyObject visual) : bool
+	- FindNearestPoint(this Viewport3D viewport, 
+		Windows.Point position) : Media3D.Point3D?
+	- FindNearestVisual(this Viewport3D viewport, 
+		Windows.Point position) : Visual3D
+	- GetRay(this Viewport3D viewport, 
+		Windows.Point position) : Ray3D
+	- Point2DtoPoint3D(this Viewport3D viewport, 
+		Windows.Point pointIn, 
+		out Media3D.Point3D pointNear, 
+		out Media3D.Point3D pointFar) : bool
+	- Point2DtoRay3D(this Viewport3D viewport, 
+		Windows.Point pointIn) : Ray3D
+	- Point3DtoPoint2D(this Viewport3D viewport, 
+		IEnumerable<Media3D.Point3D> points) : IEnumerable<Windows.Point>
+	- Point3DtoPoint2D(this Viewport3D viewport, 
+		Media3D.Point3D point) : Windows.Point
+	- RenderBitmap(this Viewport3D view, 
+		double width, 
+		double height, 
+		Brush background, 
+		[int m = 1]) : System.Windows.Media.Imaging.BitmapSource
+	- RenderBitmap(this Viewport3D view, 
+		Media.Brush background, 
+		[int m = 1]) : Imaging.BitmapSource
+	- SaveBitmap(this Viewport3D view, 
+		string fileName, 
+		[Media.Brush background = null], 
+		[int m = 1], 
+		[HelixToolkit.Wpf.BitmapExporter.OutputFormat format = 0])
+	- SaveBitmap(this Viewport3D view, 
+		System.IO.Stream stream, 
+		[Media.Brush background = null], 
+		[int m = 1], 
+		[HelixToolkit.Wpf.BitmapExporter.OutputFormat format = 0])
+	- SearchFor<T>(this IEnumerable<Visual3D> collection) : IList<Model3D>
+	- UnProject(this Viewport3D viewport, 
+		Windows.Point p) : Media3D.Point3D? 
+	- UnProject(this Viewport3D viewport, 
+		Windows.Point p, 
+		Media3D.Point3D position, 
+		Media3D.Vector3D normal) : Media3D.Point3D?
+
+// A hit result.
+Viewport3DHelper.HitResult
+	- Distance : double
+	- Mesh : MeshGeometry3D
+	- Model : Model3D
+	- Normal : Media3D.Vector3D
+	- Position : Media3D.Point3D
+	- RayHit : Media3D.RayMeshGeometry3DHitTestResult
+	- Visual : Visual3D
+
+// Represents a rectangle hit result.
+Viewport3DHelper.RectangleHitResult
+	- Model : Model3D
+	- Visual : Visual3D
+
+// Provides extension methods for System.Windows.Media.Media3D.Visual3D objects.
+Visual3DHelper
+	- Find<T>(DependencyObject parent) : T
+	- FindBounds(this Visual3D visual, Transform3D transform) : Rect3D
+	- FindBounds(this Media3D.Visual3DCollection children) : Rect3D
+	- GetTransform(this Visual3D visual) : Matrix3D
+	- GetTransformTo(this Visual3D visual, 
+		Model3D model) : Media3D.GeneralTransform3D
+	- GetViewport(this Visual3D visual) : Viewport3D
+	- GetViewport3D(this Visual3D visual) : Viewport3D
+	- GetViewportTransform(this Visual3D visual) : Matrix3D
+	- IsAttachedToViewport3D(this Visual3D visual) : bool
+	- Traverse<T>(this Visual3D visual, 
+		System.Action<T, Media3D.Transform3D> action)
+	- Traverse<T>(this Visual3D visual, 
+		System.Action<T, Visual3D, Media3D.Transform3D> action)
+	- Traverse<T>(this Visual3DCollection visuals, 
+		System.Action<T, Media3D.Transform3D> action)
+	- Traverse<T>(this Visual3DCollection visuals, 
+		System.Action<T, Visual3D, Media3D.Transform3D> action)
+
+VisualsSelectedByPointEventArgs : VisualsSelectedEventArgs
+	-  Position : Windows.Point
+
+VisualsSelectedByRectangleEventArgs : VisualsSelectedEventArgs
+	- Rectangle : Windows.Rect
+
+VisualsSelectedEventArgs : System.EventArgs
+	- AreSortedByDistanceAscending : bool
+	- SelectedVisuals : IList<Visual3D> 
+
+
+
+
+
+
