@@ -3,6 +3,9 @@ using System.Windows.Media.Media3D;
 
 namespace WpfApp.Lib3D.Utility
 {
+    /// <summary>
+    /// Create random 3D data structures
+    /// </summary>
     public static class RandUtil
     {
 
@@ -21,9 +24,23 @@ namespace WpfApp.Lib3D.Utility
         /// </summary>
         public static Vector3D NextUnitVector3D(this Random rand)
         {
-            var v = new Vector3D(rand.NextDouble(), rand.NextDouble(), rand.NextDouble());
+            var v = rand.NextVector3D(0, 1);
             v.Normalize();
             return v;
+        }
+
+        /// <summary>
+        /// Create a random 3D vector
+        /// </summary>
+        public static Vector3D NextVector3D(this Random rand, double min, double max)
+        {
+            var rng = max - min;
+            return new()
+            {
+                X = rand.NextDouble() * rng + min,
+                Y = rand.NextDouble() * rng + min,
+                Z = rand.NextDouble() * rng + min
+            };
         }
 
         /// <summary>
@@ -31,21 +48,28 @@ namespace WpfApp.Lib3D.Utility
         /// </summary>
         public static Size3D NextSize(this Random rand, double min, double max)
         {
-            var rng = max - min;
-            var sx = rand.NextDouble() * rng + min;
-            var sy = rand.NextDouble() * rng + min;
-            var sz = rand.NextDouble() * rng + min;
-            return new(sx, sy, sz);
+            var v = rand.NextVector3D(min, max);
+            return new(v.X, v.Y, v.Z);
         }
 
         /// <summary>
         /// Create a random world coordinate within a sphere boundary
         /// </summary>
-        public static Point3D NextLocation(this Random rand, Point3D sphereCenter, double radius)
+        public static Point3D NextLocation(this Random rand, BoundingSphere sphere)
         {
             var v = rand.NextUnitVector3D();
-            v = v * rand.NextDouble() * radius;
-            return v + sphereCenter;
+            v = v * rand.NextDouble() * (sphere.Radius - 0.00000001);
+            return v + sphere.Center;
+        }
+
+        /// <summary>
+        /// Create a random world coordinate on a sphere boundary
+        /// </summary>
+        public static Point3D NextLocationOnSphere(this Random rand, BoundingSphere sphere)
+        {
+            var v = rand.NextUnitVector3D();
+            v = v * (sphere.Radius - 0.00000001);
+            return v + sphere.Center;
         }
 
         /// <summary>
@@ -54,10 +78,12 @@ namespace WpfApp.Lib3D.Utility
         public static Point3D NextLocation(this Random rand, Rect3D bound)
         {
             var l = bound.Location;
-            var x = rand.NextDouble() * bound.SizeX + l.X;
-            var y = rand.NextDouble() * bound.SizeY + l.Y;
-            var z = rand.NextDouble() * bound.SizeZ + l.Z;
-            return new(x, y, z);
+            return new()
+            {
+                X = rand.NextDouble() * bound.SizeX + l.X,
+                Y = rand.NextDouble() * bound.SizeY + l.Y,
+                Z = rand.NextDouble() * bound.SizeZ + l.Z
+            };
         }
 
         /// <summary>
@@ -75,11 +101,8 @@ namespace WpfApp.Lib3D.Utility
         /// <summary>
         /// Create a random rotation transform
         /// </summary>
-        public static RotateTransform3D NextRotation(this Random rand, Point3D center)
-        {
-            var q = new Quaternion(rand.NextUnitVector3D(), rand.NextDouble() * 360);
-            return new(new QuaternionRotation3D(q), center);
-        }
+        public static Transform3D NextRotation(this Random rand, Point3D center) =>
+            CoordUtil.GetRotationTransform(rand.NextUnitVector3D(), rand.NextDouble() * 360, center);
 
         /// <summary>
         /// Create a random transform of rotation, location, and size
@@ -92,17 +115,14 @@ namespace WpfApp.Lib3D.Utility
 
             // random translation
             var l = rand.NextLocation(bound);
-            var t = new TranslateTransform3D(l - center);
+            var t = CoordUtil.GetTranslationTransform(l - center);
 
             // random scale
             var v = rand.NextVal(minSize, maxSize);
-            var s = new ScaleTransform3D(v, v, v);
+            var s = CoordUtil.GetScaleTranform(CoordUtil.GetScaleVector(v), center);
 
             // combine random transforms
-            var g = new Transform3DGroup();
-            g.Children = new Transform3DCollection { r, s, t };
-
-            return new MatrixTransform3D(g.Value);
+            return CoordUtil.GetTransform([r, s, t]);
         }
 
         #endregion

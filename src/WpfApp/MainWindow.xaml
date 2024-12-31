@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:WpfApp"
         xmlns:lib="clr-namespace:WpfApp.Lib3D;assembly=WpfApp.Lib3D"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
-    <Grid>
+        Title="Learn 3D with HelixToolkit" Height="450" Width="800" WindowState="Maximized">
+    <DockPanel LastChildFill="True">
+        <lib:UMenu DockPanel.Dock="Top"></lib:UMenu>
         <lib:UViewPort x:Name="vp"></lib:UViewPort>
-    </Grid>
+    </DockPanel>
 </Window>

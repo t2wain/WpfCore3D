@@ -23,7 +23,6 @@ namespace WpfApp
 
         public void TestVisual()
         {
-            this.vp.AddLight();
             this.vp.AddRandomVisuals(CoordUtil.GetBound(new(200, 200, 200)));
         }
     }

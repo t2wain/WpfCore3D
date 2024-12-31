@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Media3D;
+﻿using HelixToolkit.Wpf;
+using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Utility;
 
 namespace WpfApp.Lib3D.Test
@@ -21,8 +22,16 @@ namespace WpfApp.Lib3D.Test
 
             var c = new Point3D();
             var r = 100;
-            var l2 = Enumerable.Range(0, 100).Select(i => rand.NextLocation(c, r)).ToList();
-            var t2 = l2.Where(p => ((Vector3D)p).Length > r).ToList();
+            var s = new BoundingSphere(c, r);
+            var l2 = Enumerable.Range(0, 100).Select(i => rand.NextLocation(s)).ToList();
+            var t2 = l2.Where(p => !s.Contains(p)).ToList();
+            if (t2.Count > 0)
+                throw new Exception();
+
+            var l3 = Enumerable.Range(0, 100).Select(i => rand.NextLocationOnSphere(s)).ToList();
+            var t3 = l3.Where(p => !s.Contains(p)).ToList();
+            if (t3.Count > 0)
+                throw new Exception();
 
             var v = rand.NextUnitVector3D();
 

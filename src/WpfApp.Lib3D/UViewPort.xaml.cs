@@ -13,38 +13,26 @@ namespace WpfApp.Lib3D
     public partial class UViewPort : UserControl, IDisposable
     {
         PointSelectionBinder _vpb = null!;
+        CommandBinder _cmd = null!;
 
         public UViewPort()
         {
             InitializeComponent();
             this._vpb = new PointSelectionBinder(this.vport);
-        }
-
-        public void AddLight()
-        {
-            this.vport.Children.Add(new DefaultLights());
-            this.vport.Children.Add(VisualBuilder.CreateCoordinateSystemVisual3D(2));
+            this._cmd = new CommandBinder(this.vport);
+            this._cmd.InitViewPort();
         }
 
         public void AddRandomVisuals(Rect3D bound)
         {
-            var lst = BuilderTest.Run(bound);
-            var g = new ModelVisual3D();
-            AddVisuals(g.Children, lst);
-            this.vport.Children.Add(g);
-            this.vport.ZoomExtents(bound.Expand(40));
-            //this.AddVisuals(this.vport.Children, lst);
-        }
-
-        public void AddVisuals(Visual3DCollection col, IEnumerable<Visual3D> visuals)
-        {
-            foreach (var v in visuals)
-                col.Add(v);
+            this._cmd.ClearVisual();
+            this._cmd.GenerateRandomVisual(bound);
         }
 
         public void Dispose()
         {
             this._vpb.Dispose();
+            this._cmd.Dispose();
         }
     }
 }
