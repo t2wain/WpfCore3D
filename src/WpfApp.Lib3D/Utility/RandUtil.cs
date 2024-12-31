@@ -27,6 +27,18 @@ namespace WpfApp.Lib3D.Utility
         }
 
         /// <summary>
+        /// Create a random size
+        /// </summary>
+        public static Size3D NextSize(this Random rand, double min, double max)
+        {
+            var rng = max - min;
+            var sx = rand.NextDouble() * rng + min;
+            var sy = rand.NextDouble() * rng + min;
+            var sz = rand.NextDouble() * rng + min;
+            return new(sx, sy, sz);
+        }
+
+        /// <summary>
         /// Create a random world coordinate within a sphere boundary
         /// </summary>
         public static Point3D NextLocation(this Random rand, Point3D sphereCenter, double radius)
@@ -63,26 +75,34 @@ namespace WpfApp.Lib3D.Utility
         /// <summary>
         /// Create a random rotation transform
         /// </summary>
-        public static RotateTransform3D NextRotation(this Random rand)
+        public static RotateTransform3D NextRotation(this Random rand, Point3D center)
         {
             var q = new Quaternion(rand.NextUnitVector3D(), rand.NextDouble() * 360);
-            var r = new QuaternionRotation3D(q);
-            return new(r);
+            return new(new QuaternionRotation3D(q), center);
         }
 
         /// <summary>
         /// Create a random transform of rotation, location, and size
         /// </summary>
-        public static Transform3D NextTransform(this Random rand, Rect3D bound, double minSize, double maxSize)
+        public static Transform3D NextTransform(this Random rand, Rect3D bound, 
+            double minSize, double maxSize, Point3D center)
         {
-            var r = rand.NextRotation();
+            // random rotation
+            var r = rand.NextRotation(center);
+
+            // random translation
             var l = rand.NextLocation(bound);
-            var t = new TranslateTransform3D((Vector3D)l);
+            var t = new TranslateTransform3D(l - center);
+
+            // random scale
             var v = rand.NextVal(minSize, maxSize);
             var s = new ScaleTransform3D(v, v, v);
+
+            // combine random transforms
             var g = new Transform3DGroup();
             g.Children = new Transform3DCollection { r, s, t };
-            return g;
+
+            return new MatrixTransform3D(g.Value);
         }
 
         #endregion

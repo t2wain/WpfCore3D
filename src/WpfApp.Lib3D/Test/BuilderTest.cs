@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Media3D;
+﻿using HelixToolkit.Wpf;
+using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Utility;
 
 namespace WpfApp.Lib3D.Test
@@ -18,23 +19,30 @@ namespace WpfApp.Lib3D.Test
 
         static void Test1()
         {
-            var t = new MatrixTransform3D(Matrix3D.Identity);
             Visual3D v = null!;
-            v = VisualBuilder.CreateArrowVisual3D(t);
-            v = VisualBuilder.CreateBoundingBoxVisual3D(t);
-            v = VisualBuilder.CreateBoundingBoxWireFrameVisual3D(t);
+            v = VisualBuilder.CreateArrowVisual3D();
+            v = VisualBuilder.CreateBoundingBoxVisual3D(new(1,1,1));
+            v = VisualBuilder.CreateBoundingBoxWireFrameVisual3D(new(1,1,1));
         }
 
         static IEnumerable<Visual3D> Test2(Random rand, Rect3D bound)
         {
-            return new List<Visual3D>
-            {
-                VisualBuilder.CreateBoundingBoxVisual3D(rand.NextTransform(bound, 1, 5)),
-                VisualBuilder.CreateBoundingBoxWireFrameVisual3D(rand.NextTransform(bound, 1, 5)),
-                VisualBuilder.CreateBoxVisual3D(rand.NextTransform(bound, 1, 5)),
-                VisualBuilder.CreateCubeVisual3D(rand.NextTransform(bound, 1, 5)),
-                VisualBuilder.CreatTeapot(rand.NextTransform(bound, 0.5, 3)),
-            };
+            var v1 = VisualBuilder.CreateBoundingBoxVisual3D(rand.NextSize(1, 5));
+            v1.Transform = rand.NextTransform(bound, 1, 1, v1.BoundingBox.GetCenter());
+
+            var v2 = VisualBuilder.CreateBoundingBoxWireFrameVisual3D(rand.NextSize(1, 10), rand.Next(1, 4));
+            v2.Transform = rand.NextTransform(bound, 1, 1, v2.BoundingBox.GetCenter());
+
+            var v3 = VisualBuilder.CreateBoxVisual3D(rand.NextSize(1, 5));
+            v3.Transform = rand.NextTransform(bound, 1, 1, v3.Center);
+
+            var v4 = VisualBuilder.CreateCubeVisual3D();
+            v4.Transform = rand.NextTransform(bound, 1, 5, v4.Center);
+
+            var v5 = VisualBuilder.CreatTeapot();
+            v5.Transform = rand.NextTransform(bound, 0.5, 3, v5.Position);
+
+            return [ v1, v2, v3, v4, v5 ];
         }
     }
 }

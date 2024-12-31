@@ -12,12 +12,12 @@ namespace WpfApp.Lib3D
     /// </summary>
     public partial class UViewPort : UserControl, IDisposable
     {
-        ViewPortBinder _vpb = null!;
+        PointSelectionBinder _vpb = null!;
 
         public UViewPort()
         {
             InitializeComponent();
-            this._vpb = new ViewPortBinder(this.vport);
+            this._vpb = new PointSelectionBinder(this.vport);
         }
 
         public void AddLight()
@@ -32,6 +32,7 @@ namespace WpfApp.Lib3D
             var g = new ModelVisual3D();
             AddVisuals(g.Children, lst);
             this.vport.Children.Add(g);
+            this.vport.ZoomExtents(bound.Expand(40));
             //this.AddVisuals(this.vport.Children, lst);
         }
 
