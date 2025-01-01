@@ -6,6 +6,8 @@ Create a set of built-in 3D models then apply following transforms to each model
 - a random scale transform, and
 - a random rotation transform
 
+![WpfApp](./WpfApp.JPG)
+
 ## Select a 3D Model in the Viewport
 
 Double-click with the left mouse button on a model will change it to a different random color.
@@ -32,8 +34,8 @@ Clear - delete all the 3D models.
 
 ## HelixToolkit Default Navigation with Mouse
 
-- {Left button down} - rotate view
+- {Right button down} - rotate view
 - {Middle button down} - pan view
-- {Left button double click} - set center point of rotation
+- {Right button double click} - set center point of rotation
 - {Left click on view cube} - change view
 - {Left double click on view cube} - change to opposite view
