@@ -1,5 +1,4 @@
 ﻿using HelixToolkit.Wpf;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Utility;
@@ -13,38 +12,42 @@ namespace WpfApp.Lib3D.Binder
         public PointSelectionBinder(HelixViewport3D vp)
         {
             this._vp = vp;
-            this.Enable();
+            this.ConfigHandler();
         }
 
-        public virtual void Enable()
+        #region Eventhandler
+
+        protected virtual void ConfigHandler()
         {
-            if (!this.IsEnabled)
-            {
-                this._vp.Viewport.MouseDown += OnMouseDown;
-                this.IsEnabled = true;
-            }
+            this._vp.MouseDown += OnMouseDown;
         }
 
-        public virtual void Disable()
+        protected virtual void CleanupHandler()
         {
-            if (this.IsEnabled)
-            {
-                this._vp.Viewport.MouseDown -= OnMouseDown;
-                this.IsEnabled = false;
-            }
+            this._vp.MouseDown -= OnMouseDown;
         }
-
-        public bool IsEnabled { get; set; }
 
         protected virtual void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+            if (this.IsPointSelectionEnabled 
+                && e.LeftButton == MouseButtonState.Pressed)
             {
-                var p = e.GetPosition(this._vp.Viewport);
-                var v = this._vp.Viewport.FindNearestVisual(p);
+                var p = e.GetPosition(this._vp);
+                var v = HitUtil.FindHits(this._vp.Viewport, p);
+                //var v = this._vp.Viewport.FindNearestVisual(p);
+                //HitUtil.FindHits(this._vp.Viewport, p);
+                //HitUtil.FindHits2(this._vp.Viewport, p);
                 OnVisualSelected(v);
             }
         }
+
+        #endregion
+
+        #region Selection
+
+        public bool IsPointSelectionEnabled { get; set; }
+
+        public bool IsRectangleSelectionEnabled { get; set; }
 
         protected virtual void OnVisualSelected(Visual3D? v)
         {
@@ -54,9 +57,11 @@ namespace WpfApp.Lib3D.Binder
             }
         }
 
+        #endregion
+
         public void Dispose()
         {
-            this.Disable();
+            this.CleanupHandler();
             this._vp = null!;
         }
     }

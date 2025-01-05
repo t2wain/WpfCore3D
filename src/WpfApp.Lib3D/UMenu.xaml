@@ -13,13 +13,27 @@
     </UserControl.Resources>
     <Grid>
         <Menu>
-            <MenuItem Header="View">
+            <MenuItem Header="Test">
                 <MenuItem
-                    Command="{x:Static local:Lib3DCommands.RefreshVisualCommand}"></MenuItem>
+                    Command="{x:Static local:Lib3DCommands.GenerateVisualCommand}"></MenuItem>
                 <MenuItem 
-                    Command="{x:Static local:Lib3DCommands.ReShuffleVisualCommand}"></MenuItem>
+                    Command="{x:Static local:Lib3DCommands.ShuffleVisualCommand}"></MenuItem>
                 <MenuItem 
                     Command="{x:Static local:Lib3DCommands.ClearViewPortCommand}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem 
+                    Command="{x:Static local:Lib3DCommands.ZoomExtentCommand}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Selection">
+                <MenuItem 
+                    IsCheckable="True" 
+                    Command="{x:Static local:Lib3DCommands.TogglePointSelectionCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"></MenuItem>
+                <MenuItem 
+                    IsCheckable="True" 
+                    Command="{x:Static local:Lib3DCommands.ToggleRectangleSelectionCommand}" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"></MenuItem>
             </MenuItem>
         </Menu>
     </Grid>

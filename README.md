@@ -14,11 +14,9 @@ Double-click with the left mouse button on a model will change it to a different
 
 ## Actions in the View Menu
 
-Refresh - recreate a different set of of 3D models with random transforms.
-
-Reshuffle - apply a different random transform on the existing set of 3D models.
-
-Clear - delete all the 3D models.
+- Refresh - recreate a different set of of 3D models with random transforms.
+- Reshuffle - apply a different random transform on the existing set of 3D models.
+- Clear - delete all the 3D models.
 
 ## HelixToolkit Default Navigation with Keyboard
 
@@ -36,6 +34,7 @@ Clear - delete all the 3D models.
 
 - {Right button down} - rotate view
 - {Middle button down} - pan view
-- {Right button double click} - set center point of rotation
+- {Right button double-click} - re-center view and point-of-rotation on the nearby model
 - {Left click on view cube} - change view
-- {Left double click on view cube} - change to opposite view
+- {Left double-click on view cube} - change to opposite view
+- {Scroll wheel} - Zooming
