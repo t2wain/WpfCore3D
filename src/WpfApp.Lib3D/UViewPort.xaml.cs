@@ -1,9 +1,6 @@
-﻿using HelixToolkit.Wpf;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Binder;
-using WpfApp.Lib3D.Test;
-using WpfApp.Lib3D.Utility;
 
 namespace WpfApp.Lib3D
 {

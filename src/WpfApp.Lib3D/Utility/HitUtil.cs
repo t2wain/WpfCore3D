@@ -22,6 +22,22 @@ namespace WpfApp.Lib3D.Utility
             return v;
         }
 
+        static CombinedSelectionCommand _cmd = null!;
+
+        public static void FindHits(Viewport3D vp, Point point, Action<IEnumerable<Visual3D>> _cb)
+        {
+            if (_cmd == null)
+            {
+                _cmd = new CombinedSelectionCommand(vp, (object? sender, VisualsSelectedEventArgs e) =>
+                    {
+                        var lst = new List<Visual3D>();
+                        lst.AddRange(e.SelectedVisuals);
+                        _cb(lst);
+                    });
+            }
+            _cmd.Execute(point);
+        }
+
         /// <summary>
         /// Using HelixToolkit.Wpf.Viewport3DHelper
         /// </summary>

@@ -1,4 +1,6 @@
 ﻿using HelixToolkit.Wpf;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Utility;
@@ -29,15 +31,24 @@ namespace WpfApp.Lib3D.Binder
 
         protected virtual void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.IsPointSelectionEnabled 
+            if ((this.IsRectangleSelectionEnabled || this.IsPointSelectionEnabled) 
                 && e.LeftButton == MouseButtonState.Pressed)
             {
-                var p = e.GetPosition(this._vp);
+                RunHitSelection(e.GetPosition(this._vp));
+            }
+        }
+
+        protected void RunHitSelection(Point p)
+        {
+            if (this.IsRectangleSelectionEnabled)
+            {
+                HitUtil.FindHits(this._vp.Viewport, p, OnVisualSelected);
+            }
+            else if (this.IsPointSelectionEnabled)
+            {
                 var v = HitUtil.FindHits(this._vp.Viewport, p);
-                //var v = this._vp.Viewport.FindNearestVisual(p);
-                //HitUtil.FindHits(this._vp.Viewport, p);
-                //HitUtil.FindHits2(this._vp.Viewport, p);
-                OnVisualSelected(v);
+                if (v != null)
+                    OnVisualSelected([v]);
             }
         }
 
@@ -49,11 +60,14 @@ namespace WpfApp.Lib3D.Binder
 
         public bool IsRectangleSelectionEnabled { get; set; }
 
-        protected virtual void OnVisualSelected(Visual3D? v)
+        protected virtual void OnVisualSelected(IEnumerable<Visual3D> lstVisuals)
         {
-            if (v is ModelVisual3D mv && mv.Content is GeometryModel3D gm)
+            foreach (var v in lstVisuals)
             {
-                gm.Material = RandUtil.GetRand().GetMaterial(gm.Material);
+                if (v is ModelVisual3D mv && mv.Content is GeometryModel3D gm)
+                {
+                    gm.Material = RandUtil.GetRand().GetMaterial(gm.Material);
+                }
             }
         }
 

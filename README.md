@@ -8,15 +8,24 @@ Create a set of built-in 3D models then apply following transforms to each model
 
 ![WpfApp](./WpfApp.JPG)
 
-## Select a 3D Model in the Viewport
+## Actions in the Test Menu
 
-Double-click with the left mouse button on a model will change it to a different random color.
+- Generate - recreate a different set of of 3D models with random transforms.
+- Shuffle - apply a different random transform to the existing set of 3D models.
+- Clear - delete all the 3D models.
 
 ## Actions in the View Menu
 
-- Refresh - recreate a different set of of 3D models with random transforms.
-- Reshuffle - apply a different random transform on the existing set of 3D models.
-- Clear - delete all the 3D models.
+- Zoom Extents - change camera setting to ensure all the models are within view.
+
+## Action in the Selection Menu
+
+- Point Selection - toggle the feature to enable selection of the model with the left mouse button.
+- Rectangle Selection - toggle the feature to enable selection of the model(s) with a rectangle drawn with the left mouse button.
+    - When rectangle is drawn from left to right, model(s) are selected when they are inside the rectangle.
+    - When rectangle is drawn from right to left, model(s) are selected when they touched with the rectangle.
+
+A new random color is assigned to the model when they are selected. 
 
 ## HelixToolkit Default Navigation with Keyboard
 
