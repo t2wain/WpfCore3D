@@ -16,4 +16,10 @@
     <ProjectReference Include="..\WpfApp.Lib3D\WpfApp.Lib3D.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

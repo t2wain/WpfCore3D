@@ -1,10 +1,18 @@
 ﻿namespace RacewayDataLib
 {
+    /// <summary>
+    /// Provide configuration data of the raceway data file path
+    /// </summary>
     public class DataConfig
     {
-        public DataConfig()
+        /// <summary>
+        /// Initialize default file name and path (see source code)
+        /// </summary>
+        public DataConfig() : this("C:\\devgit\\Data\\J6327") { }
+
+        public DataConfig(string folderPath)
         {
-            this.DataFolderPath = "C:\\devgit\\Data\\J6327";
+            this.DataFolderPath = folderPath;
             this.RacewayFile = Path.Combine(DataFolderPath, "raceways.csv");
             this.NodeFile = Path.Combine(DataFolderPath, "nodes.csv");
             this.SegSystemFile = Path.Combine(DataFolderPath, "seg_systems.csv");

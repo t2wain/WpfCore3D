@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace RacewayDataLib
 {
+    /// <summary>
+    /// Read and save raceway data from and to CSV files
+    /// </summary>
     public static class NetworkDB
     {
         public class NetworkData
@@ -14,14 +17,23 @@ namespace RacewayDataLib
             public IEnumerable<Node> Nodes { get; set; } = [];
         }
 
+        /// <summary>
+        /// Filter raceway
+        /// </summary>
         public static IEnumerable<Raceway> GetTray(this IEnumerable<Raceway> raceways) =>
             raceways.Where(r => r.Type == "TRAY");
 
+        /// <summary>
+        /// Filter raceway
+        /// </summary>
         public static IEnumerable<Raceway> SelectSystem(this IEnumerable<Raceway> raceways, int sysId) =>
             raceways.Where(r => r.Systems.Contains(sysId));
 
-        #region Read Data
+        #region Read Data from CSV files
 
+        /// <summary>
+        /// Load a complete set of raceway data from CSV files
+        /// </summary>
         public static NetworkData LoadData(DataConfig files)
         {
             var data = new NetworkData
@@ -92,24 +104,28 @@ namespace RacewayDataLib
 
         #endregion
 
-        #region Save Data
+        #region Save Data to CSV files
 
         public static void SaveRaceways(string path, IEnumerable<Raceway> data)
         {
             SaveData(path, data, typeof(RacewayMap));
         }
+
         public static void SaveCables(string path, IEnumerable<Cable> data)
         {
             SaveData(path, data, typeof(CableMap));
         }
+
         public static void SaveRoutes(string path, IEnumerable<Route> data)
         {
             SaveData(path, data, typeof(RouteMap));
         }
+
         public static void SaveSegSystems(string path, IEnumerable<SegSystem> data)
         {
             SaveData(path, data, typeof(SegSystemMap));
         }
+
         public static void SaveNodes(string path, IEnumerable<Node> data)
         {
             SaveData(path, data, typeof(NodeMap));

@@ -1,5 +1,7 @@
 ﻿using HelixToolkit.Wpf;
+using Microsoft.Extensions.Configuration;
 using RacewayDataLib;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
@@ -12,12 +14,32 @@ namespace WpfApp.Lib3D.Binder
     {
         private HelixViewport3D _vp = null!;
         private PointSelectionBinder _selBinder = null!;
+        string? _rwDataFolder = null;
 
         public CommandBinder(HelixViewport3D vp)
         {
             this._vp = vp;
             this._selBinder = new PointSelectionBinder(vp);
             this.ConfigCommand();
+        }
+
+        protected DataConfig GetDataConfig()
+        {
+            var fn = "appsettings.json";
+            if (this._rwDataFolder == null && File.Exists(fn))
+            {
+                var cb = new ConfigurationBuilder();
+                cb.AddJsonFile(fn);
+                var root = cb.Build();
+                this._rwDataFolder = root["RacewayDataFolder"];
+            }
+            else this._rwDataFolder = "";
+
+            return string.IsNullOrEmpty(this._rwDataFolder) switch
+            {
+                true => new DataConfig(),
+                _ => new DataConfig(this._rwDataFolder)
+            };
         }
 
         #region Command
@@ -113,8 +135,9 @@ namespace WpfApp.Lib3D.Binder
         protected void LoadNetwork()
         {
             this.ClearVisuals();
-            var d = NetworkDB.LoadData(new());
-            var r = d.Raceways.GetTray().SelectSystem(6);
+            var d = NetworkDB.LoadData(GetDataConfig());
+            //var r = d.Raceways.GetTray().SelectSystem(6);
+            var r = d.Raceways.GetTray();
             this.Current.Children.Add(NetworkTest.BuildNetwork(r));
             this.ZoomExtent();
         }
