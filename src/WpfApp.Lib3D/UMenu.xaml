@@ -20,6 +20,8 @@
                     Command="{x:Static local:Lib3DCommands.ShuffleVisualCommand}"></MenuItem>
                 <MenuItem 
                     Command="{x:Static local:Lib3DCommands.ClearViewPortCommand}"></MenuItem>
+                <MenuItem 
+                    Command="{x:Static local:Lib3DCommands.LoadNetworkCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem 

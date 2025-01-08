@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using RacewayDataLib;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
@@ -31,17 +32,15 @@ namespace WpfApp.Lib3D.Binder
                 new CommandBinding(Lib3DCommands.ZoomExtentCommand, this.OnZoomExtent, this.OnShuffleCanExecute),
                 new CommandBinding(Lib3DCommands.TogglePointSelectionCommand, this.OnTogglePointSelection, this.OnShuffleCanExecute),
                 new CommandBinding(Lib3DCommands.ToggleRectangleSelectionCommand, this.OnToggleRectangleSection, this.OnShuffleCanExecute),
+                new CommandBinding(Lib3DCommands.LoadNetworkCommand, this.OnLoadNetwork),
             };
 
             foreach (var c in lst)
                 this._vp.CommandBindings.Add(c);
         }
 
-        virtual protected void OnGenerate(object sender, RoutedEventArgs e) 
-        {
-            this.ClearVisuals();
+        virtual protected void OnGenerate(object sender, RoutedEventArgs e) =>
             this.GenerateRandomVisual();
-        }
 
         virtual protected void OnShuffle(object sender, RoutedEventArgs e) =>
             this.ShuffleVisuals();
@@ -61,6 +60,9 @@ namespace WpfApp.Lib3D.Binder
         virtual protected void OnToggleRectangleSection(object sender, ExecutedRoutedEventArgs e) =>
             this._selBinder.IsRectangleSelectionEnabled = (bool)e.Parameter;
 
+        virtual protected void OnLoadNetwork(object sender, RoutedEventArgs e) =>
+            this.LoadNetwork();
+
         #endregion
 
         #region Visual
@@ -69,18 +71,24 @@ namespace WpfApp.Lib3D.Binder
         {
             this._vp.Viewport.Children.Clear();
             this._vp.Viewport.Children.Add(new DefaultLights());
-            this._vp.Viewport.Children.Add(VisualBuilder.CreateCoordinateSystemVisual3D(2));
             this.Current = new ModelVisual3D();
+            this.Center = new ModelVisual3D();
             this._vp.Viewport.Children.Add(this.Current);
+            this._vp.Viewport.Children.Add(this.Center);
+            this.Center.Children.Add(VisualBuilder.CreateCoordinateSystemVisual3D(2));
             this.Bound = CoordUtil.GetBound(new(200, 200, 200));
         }
+        public ModelVisual3D Center { get; protected set; } = null!;
 
         public ModelVisual3D Current { get; protected set; } = null!;
 
         protected Rect3D Bound { get; set; }
 
-        public void ClearVisuals() =>
+        public void ClearVisuals()
+        {
+            this.Center.Children.Clear();
             this.Current.Children.Clear();
+        }
 
         public void ShuffleVisuals()
         {
@@ -95,9 +103,20 @@ namespace WpfApp.Lib3D.Binder
 
         protected void GenerateRandomVisual()
         {
+            this.ClearVisuals();
+            this.Center.Children.Add(VisualBuilder.CreateCoordinateSystemVisual3D(2));
             var lst = BuilderTest.Run(this.Bound);
             AddVisuals(this.Current.Children, lst);
             this.ZoomExtent();   
+        }
+
+        protected void LoadNetwork()
+        {
+            this.ClearVisuals();
+            var d = NetworkDB.LoadData(new());
+            var r = d.Raceways.GetTray().SelectSystem(6);
+            this.Current.Children.Add(NetworkTest.BuildNetwork(r));
+            this.ZoomExtent();
         }
 
         protected void AddVisuals(Visual3DCollection col, IEnumerable<Visual3D> visuals)
@@ -112,7 +131,7 @@ namespace WpfApp.Lib3D.Binder
 
         public virtual void ZoomExtent()
         {
-            this._vp.ZoomExtents(this.Bound, 200);
+            this._vp.ZoomExtents();
         }
 
         #endregion

@@ -16,4 +16,8 @@
     <Folder Include="Cmd\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RacewayDataLib\RacewayDataLib.csproj" />
+  </ItemGroup>
+
 </Project>

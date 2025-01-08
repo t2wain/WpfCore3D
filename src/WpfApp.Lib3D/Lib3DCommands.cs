@@ -12,6 +12,7 @@ namespace WpfApp.Lib3D
             ZoomExtentCommand = new RoutedUICommand("Zoom Extent", "Lib3D.ZoomExtent", typeof(Lib3DCommands));
             TogglePointSelectionCommand = new RoutedUICommand("Point Selection", "Lib3D.TogglePointSelection", typeof(Lib3DCommands));
             ToggleRectangleSelectionCommand = new RoutedUICommand("Rectangle Selection", "Lib3D.ToggleRectangleSelection", typeof(Lib3DCommands));
+            LoadNetworkCommand = new RoutedUICommand("Load Network", "Lib3D.LoadNetwork", typeof(Lib3DCommands));
         }
 
         public static readonly RoutedUICommand GenerateVisualCommand = null!;
@@ -25,6 +26,8 @@ namespace WpfApp.Lib3D
         public static readonly RoutedUICommand TogglePointSelectionCommand = null!;
 
         public static readonly RoutedUICommand ToggleRectangleSelectionCommand = null!;
+
+        public static readonly RoutedUICommand LoadNetworkCommand = null!;
 
     }
 }
