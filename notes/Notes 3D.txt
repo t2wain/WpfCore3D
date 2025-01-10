@@ -1,0 +1,113 @@
+System.Windows.Media.Media3D
+abstract Visual3D : DependencyObject, IAnimatable
+	- protected AddVisual3DChild(Visual3D child)
+	- virtual Visual3D GetVisual3DChild(int index)
+	- virtual int Visual3DChildrenCount { get; }
+	- protected Model3D Visual3DModel { get; set; }
+
+ModelVisual3D : Visual3D, IAddChild
+	- Visual3DCollection Children { get; }
+	- Model3D Content { get; set; }
+
+Visual3DCollection
+	- Add(Visual3D value)
+	- Visual3D this[int index] { get; set; }
+
+======================================
+
+System.Windows.Markup
+IAddChild
+	- AddChild(object value)
+	- AddText(string text)
+
+======================================
+
+System.Windows.Controls
+ViewPort3D : System.Windows.FrameworkElement, IAddChild
+	- Camera : System.Windows.Media.Media3D.Camera
+	- Children : System.Windows.Media.Media3D.Visual3DCollection
+
+======================================
+
+System.Windows
+abstract UIElement3D : System.Windows.Media.Media3D.Visual3D
+
+System.Windows.Media.Media3D
+ContainerUIElement3D : System.Windows.UIElement3D
+	- Children : Visual3DCollection
+
+======================================
+
+HelixToolkit.Wpf
+HelixViewport3D : System.Windows.Controls.ItemsControl
+	- Camera : System.Windows.Media.Media3D.ProjectionCamera
+	- CameraController : CameraController
+	- Children : System.Windows.Media.Media3D.Visual3DCollection
+	- IsHeadLightEnabled : bool
+	- Lights : Model3DGroup // DirectionalLight
+	- Orthographic : boolean
+	- Viewport : System.Windows.Controls.Viewport3D
+
+
+======================================
+
+System.Windows.Media.Media3D
+abstract Camera : System.Windows.Media.Animation.Animatable
+abstract ProjectionCamera : Camera
+OrthographicCamera : ProjectionCamera
+PerspectiveCamera : ProjectionCamera
+
+======================================
+
+System.Windows.Media.Media3D
+abstract Model3D : System.Windows.Media.Animation.Animatable
+
+Model3DGroup : Model3D
+	- Children : Model3DCollection
+	
+	Model3DCollection : ICollection
+		- Add(Model3D value)
+		- Clear()
+		- bool Contains(Model3D value)
+		- int IndexOf(Model3D value)
+		- Insert(int index, Model3D value)
+		- bool Remove(Model3D value)
+		- RemoveAt(int index)
+		- Count : int
+		- this[int]: Model3D
+
+GeometryModel3D : Model3D
+	- Geometry : Geometry3D
+	- Material : Material
+	- BackMaterial : Material
+
+======================================
+
+abstract Light : Model3D
+abstract PointLightBase : Light
+
+AmbientLight : Light
+DirectionalLight : Light
+PointLight : PointLightBase
+SpotLight : PointLightBase
+
+======================================
+
+System.Windows.Media.Media3D
+Geometry3D : System.Windows.Media.Animation.Animatable
+MeshGeometry3D : Geometry3D
+
+======================================
+
+HelixToolkit.Wpf
+abstract RenderingModelVisual3D : System.Windows.Media.Media3D.ModelVisual3D
+
+abstract ScreenSpaceVisual3D : RenderingModelVisual3D
+	- Color : System.Windows.Media.Color
+	- Points : System.Windows.Media.Media3D.Point3DCollection
+
+LinesVisual3D : ScreenSpaceVisual3D
+	- Thickness : double
+
+PointsVisual3D : ScreenSpaceVisual3D
+	- Size : double

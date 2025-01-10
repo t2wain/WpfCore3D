@@ -1,6 +1,8 @@
 ﻿using HelixToolkit.Wpf;
 using RacewayDataLib;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using WpfApp.Lib3D.Visual;
 
 namespace WpfApp.Lib3D.Test
 {
@@ -9,23 +11,35 @@ namespace WpfApp.Lib3D.Test
         /// <summary>
         /// Create visuals of the raceway network
         /// </summary>
-        public static ModelVisual3D BuildNetwork(IEnumerable<Raceway> raceways, bool asVisual = false)
+        public static ModelVisual3D BuildNetwork(IEnumerable<Raceway> raceways, int testMode = 0)
         {
             var m = new ModelVisual3D();
-            if (asVisual)
-            {
-                // build multiple visuals for the raceway
-                m.Children.Add(BuildRacewaysAsVisual(raceways));
-                // build multiple visuals for the nodes
-                m.Children.Add(BuildNodesAsVisual(raceways));
-            }
-            else
+            if (testMode == 0)
             {
                 // build a single visual contains all the raceways
                 m.Children.Add(BuildRacewaysAsModel(raceways));
                 // build a single visual contains all the raceway nodes.
                 m.Children.Add(BuildNodesAsModel(raceways));
             }
+            else
+            {
+                // build multiple visuals for the raceway
+                m.Children.Add(BuildRacewaysAsVisual(raceways));
+                // build multiple visuals for the nodes
+                m.Children.Add(BuildNodesAsVisual(raceways));
+            }
+            return m;
+        }
+
+        public static ModelVisual3D BuildNetwork(IEnumerable<Raceway> raceways, 
+            IEnumerable<Cable> cables, IEnumerable<Node> allNodes)
+        {
+            var m = new ModelVisual3D();
+            // build a single visual contains all the raceways
+            m.Children.Add(BuildRacewaysVisual3D(raceways));
+            // build a single visual contains all the raceway nodes.
+            m.Children.Add(BuildNodeVisual3D(raceways, cables, allNodes));
+
             return m;
         }
 
@@ -34,7 +48,7 @@ namespace WpfApp.Lib3D.Test
         /// <summary>
         /// Create a single collection of 3D points with 2 points for each raceway, FromNode and ToNode. 
         /// </summary>
-        static Point3DCollection GetLinePoints(IEnumerable<Raceway> raceways) =>
+        public static Point3DCollection GetLinePoints(IEnumerable<Raceway> raceways) =>
             raceways.Aggregate(new Point3DCollection(), (col, r) => 
             {
                 col.Add(new(r.FromNode.X, r.FromNode.Y, r.FromNode.Z));
@@ -48,7 +62,7 @@ namespace WpfApp.Lib3D.Test
         /// </summary>
         /// <param name="raceways"></param>
         /// <returns></returns>
-        static IEnumerable<Point3DCollection> GetLinesPoint2(IEnumerable<Raceway> raceways) =>
+        public static IEnumerable<Point3DCollection> GetLinesPoint2(IEnumerable<Raceway> raceways) =>
             raceways.Aggregate(new List<Point3DCollection>(), (lst, r) =>
             {
                 lst.Add(new Point3DCollection() 
@@ -64,7 +78,7 @@ namespace WpfApp.Lib3D.Test
         /// Create a single collection of unique 3D points collected
         /// from the raceway nodes.
         /// </summary>
-        static Point3DCollection GetNodePoints(IEnumerable<Raceway> raceways) =>
+        public static Point3DCollection GetNodePoints(IEnumerable<Raceway> raceways) =>
             raceways.Aggregate(new Dictionary<int, Node>(), (d, r) =>
                 {
                     d.TryAdd(r.FromNodeID, r.FromNode);
@@ -77,6 +91,15 @@ namespace WpfApp.Lib3D.Test
                     col.Add(new(n.X, n.Y, n.Z));
                     return col;
                 });
+
+        public static Point3DCollection GetNodePoints(IEnumerable<Node> nodes) =>
+            nodes
+                .Aggregate(new Point3DCollection(), (col, n) =>
+                {
+                    col.Add(new(n.X, n.Y, n.Z));
+                    return col;
+                });
+
 
         #endregion
 
@@ -98,7 +121,43 @@ namespace WpfApp.Lib3D.Test
         public static PointsVisual3D BuildNodesAsModel(IEnumerable<Raceway> raceways) =>
             // note, performance is much better by assigning a new collection to Points
             // rather than adding points to existing Points collection.
-            new() { Points = GetNodePoints(raceways), Size = 3 };
+            new() { Points = GetNodePoints(raceways), Size = 3, Color = Colors.Gray };
+
+        #endregion
+
+        #region Custom Visual
+
+        public static RacewayVisual3D BuildRacewaysVisual3D(IEnumerable<Raceway> raceways)
+        {
+            var v = new RacewayVisual3D();
+            v.Raceways = raceways;
+            v.BuildMesh();
+            return v;
+        }
+
+        public static NodeVisual3D BuildNodeVisual3D(IEnumerable<Raceway> raceways, 
+            IEnumerable<Cable> cables, IEnumerable<Node> allNodes)
+        {
+            var allRwNodes = raceways.GetNodes();
+            var rwNodes = allRwNodes.Where(n => n.NodeType != "EQUIPMENT");
+            var dEqNodes = allRwNodes.Where(n => n.NodeType == "EQUIPMENT").ToDictionary(n => n.ID);
+
+            var cblNodes = allNodes.GetNodes(cables.GetNodeIds());
+            var eqNodes  = cblNodes.Aggregate(dEqNodes, (d, n) =>
+            {
+                d.TryAdd(n.ID, n);
+                return d;
+            })
+            .Values
+            .Where(n => n.X + n.Y + n.Z > 10);
+
+
+            var v = new NodeVisual3D();
+            v.RacewayNode = rwNodes;
+            v.EquipNode = eqNodes;
+            v.BuildMesh();
+            return v;
+        }
 
         #endregion
 

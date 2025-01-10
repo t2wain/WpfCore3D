@@ -4,6 +4,7 @@ using RacewayDataLib;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Test;
 using WpfApp.Lib3D.Utility;
@@ -126,6 +127,7 @@ namespace WpfApp.Lib3D.Binder
         protected void GenerateRandomVisual()
         {
             this.ClearVisuals();
+            this._vp.Background = Brushes.White;
             this.Center.Children.Add(VisualBuilder.CreateCoordinateSystemVisual3D(2));
             var lst = BuilderTest.Run(this.Bound);
             AddVisuals(this.Current.Children, lst);
@@ -135,10 +137,16 @@ namespace WpfApp.Lib3D.Binder
         protected void LoadNetwork()
         {
             this.ClearVisuals();
+            this._vp.Background = Brushes.Black;
             var d = NetworkDB.LoadData(GetDataConfig());
             //var r = d.Raceways.GetTray().SelectSystem(6);
-            var r = d.Raceways.GetTray();
-            this.Current.Children.Add(NetworkTest.BuildNetwork(r));
+            var r = d.Raceways
+                .Where(r => r.CalcLength() < 1000)
+                .SelectSystem(6)
+                .ToList();
+            this.Current.Children.Add(NetworkTest.BuildNetwork(r, 
+                d.Cables.Where(c => c.SegSystem == 6).ToList(), 
+                d.Nodes));
             this.ZoomExtent();
         }
 

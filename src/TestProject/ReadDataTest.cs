@@ -55,5 +55,14 @@ namespace TestProject
             Assert.True(lstRoute.Count() > 0);
         }
 
+        [Fact]
+        public void GetCableNode()
+        {
+            var lstNode = NetworkDB.ReadNodes(_ctx.FileConfig.NodeFile);
+            var lstCable = NetworkDB.ReadCables(_ctx.FileConfig.CableFile);
+            var lstEqNode = lstNode.GetCableNode(lstCable);
+            Assert.True(lstEqNode.Count() > 0);
+        }
+
     }
 }
