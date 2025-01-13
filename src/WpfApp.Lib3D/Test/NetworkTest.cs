@@ -8,6 +8,8 @@ namespace WpfApp.Lib3D.Test
 {
     public static class NetworkTest
     {
+        #region Network
+
         /// <summary>
         /// Create visuals of the raceway network
         /// </summary>
@@ -31,17 +33,23 @@ namespace WpfApp.Lib3D.Test
             return m;
         }
 
+        /// <summary>
+        /// Create visuals of the raceway network 
+        /// including the equipment nodes associated with the cables
+        /// </summary>
         public static ModelVisual3D BuildNetwork(IEnumerable<Raceway> raceways, 
-            IEnumerable<Cable> cables, IEnumerable<Node> allNodes)
+            IEnumerable<Cable> cables, IEnumerable<Node> nodeLookup)
         {
             var m = new ModelVisual3D();
             // build a single visual contains all the raceways
             m.Children.Add(BuildRacewaysVisual3D(raceways));
             // build a single visual contains all the raceway nodes.
-            m.Children.Add(BuildNodeVisual3D(raceways, cables, allNodes));
+            m.Children.Add(BuildNodeVisual3D(raceways, cables, nodeLookup));
 
             return m;
         }
+
+        #endregion
 
         #region Point collection
 
@@ -49,12 +57,11 @@ namespace WpfApp.Lib3D.Test
         /// Create a single collection of 3D points with 2 points for each raceway, FromNode and ToNode. 
         /// </summary>
         public static Point3DCollection GetLinePoints(IEnumerable<Raceway> raceways) =>
-            raceways.Aggregate(new Point3DCollection(), (col, r) => 
-            {
-                col.Add(new(r.FromNode.X, r.FromNode.Y, r.FromNode.Z));
-                col.Add(new(r.ToNode.X, r.ToNode.Y, r.ToNode.Z));
-                return col;
-            });
+            new(raceways.SelectMany<Raceway, Point3D>(r => [
+                new(r.FromNode.X, r.FromNode.Y, r.FromNode.Z), 
+                new(r.ToNode.X, r.ToNode.Y, r.ToNode.Z)]
+            ));
+
 
         /// <summary>
         /// Create muliple collections of 3D points.
@@ -63,14 +70,10 @@ namespace WpfApp.Lib3D.Test
         /// <param name="raceways"></param>
         /// <returns></returns>
         public static IEnumerable<Point3DCollection> GetLinesPoint2(IEnumerable<Raceway> raceways) =>
-            raceways.Aggregate(new List<Point3DCollection>(), (lst, r) =>
-            {
-                lst.Add(new Point3DCollection() 
-                {
-                    new(r.FromNode.X, r.FromNode.Y, r.FromNode.Z),
-                    new(r.ToNode.X, r.ToNode.Y, r.ToNode.Z)
-                });
-                return lst;
+            raceways.Select(r => new Point3DCollection() 
+            { 
+                new(r.FromNode.X, r.FromNode.Y, r.FromNode.Z),
+                new(r.ToNode.X, r.ToNode.Y, r.ToNode.Z)
             });
 
 
@@ -79,26 +82,18 @@ namespace WpfApp.Lib3D.Test
         /// from the raceway nodes.
         /// </summary>
         public static Point3DCollection GetNodePoints(IEnumerable<Raceway> raceways) =>
-            raceways.Aggregate(new Dictionary<int, Node>(), (d, r) =>
+            new(raceways.Aggregate(new Dictionary<int, Node>(), (d, r) =>
                 {
                     d.TryAdd(r.FromNodeID, r.FromNode);
                     d.TryAdd(r.ToNodeID, r.ToNode);
                     return d;
                 })
-                .Values
-                .Aggregate(new Point3DCollection(), (col, n) => 
-                {
-                    col.Add(new(n.X, n.Y, n.Z));
-                    return col;
-                });
+                .Select(i => new Point3D(i.Value.X, i.Value.Y, i.Value.Z))
+            );
+
 
         public static Point3DCollection GetNodePoints(IEnumerable<Node> nodes) =>
-            nodes
-                .Aggregate(new Point3DCollection(), (col, n) =>
-                {
-                    col.Add(new(n.X, n.Y, n.Z));
-                    return col;
-                });
+            new(nodes.Select(n => new Point3D(n.X, n.Y, n.Z)));
 
 
         #endregion
@@ -136,20 +131,21 @@ namespace WpfApp.Lib3D.Test
         }
 
         public static NodeVisual3D BuildNodeVisual3D(IEnumerable<Raceway> raceways, 
-            IEnumerable<Cable> cables, IEnumerable<Node> allNodes)
+            IEnumerable<Cable> cables, IEnumerable<Node> nodeLookup)
         {
             var allRwNodes = raceways.GetNodes();
-            var rwNodes = allRwNodes.Where(n => n.NodeType != "EQUIPMENT");
+            var rwNodes = allRwNodes.Where(n => n.NodeType != "EQUIPMENT").ToList();
             var dEqNodes = allRwNodes.Where(n => n.NodeType == "EQUIPMENT").ToDictionary(n => n.ID);
 
-            var cblNodes = allNodes.GetNodes(cables.GetNodeIds());
+            var cblNodes = nodeLookup.GetNodes(cables.GetNodeIds());
             var eqNodes  = cblNodes.Aggregate(dEqNodes, (d, n) =>
             {
                 d.TryAdd(n.ID, n);
                 return d;
             })
             .Values
-            .Where(n => n.X + n.Y + n.Z > 10);
+            .Where(n => n.X + n.Y + n.Z > 0)
+            .ToList();
 
 
             var v = new NodeVisual3D();

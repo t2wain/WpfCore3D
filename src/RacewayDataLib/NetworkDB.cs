@@ -65,8 +65,8 @@ namespace RacewayDataLib
         public static IEnumerable<int> GetNodeIds(this IEnumerable<Cable> cables) =>
             cables.SelectMany<Cable, int>(c => [ c.FromNodeID, c.ToNodeID ]).Distinct();
 
-        public static IEnumerable<Node> GetNodes(this IEnumerable<Node> nodes, IEnumerable<int> nodeIds) =>
-            nodes.Join(nodeIds, n => n.ID, id => id, (n, id) => n).ToList();
+        public static IEnumerable<Node> GetNodes(this IEnumerable<Node> nodeLookup, IEnumerable<int> nodeIds) =>
+            nodeLookup.Join(nodeIds, n => n.ID, id => id, (n, id) => n).ToList();
 
         #endregion
 

@@ -24,6 +24,28 @@
             <MenuItem Header="Network">
                 <MenuItem 
                     Command="{x:Static local:Lib3DCommands.LoadNetworkCommand}"></MenuItem>
+                <Separator />
+                <MenuItem 
+                    IsCheckable="True" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"
+                    Command="{x:Static local:Lib3DCommands.NetworkHideTrayCommand}"></MenuItem>
+                <MenuItem 
+                    IsCheckable="True" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"
+                    Command="{x:Static local:Lib3DCommands.NetworkHideJumpCommand}"></MenuItem>
+                <MenuItem 
+                    IsCheckable="True" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"
+                    Command="{x:Static local:Lib3DCommands.NetworkHideTrayNodeCommand}"></MenuItem>
+                <Separator />
+                <MenuItem 
+                    IsCheckable="True" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"
+                    Command="{x:Static local:Lib3DCommands.NetworkHideDropCommand}"></MenuItem>
+                <MenuItem 
+                    IsCheckable="True" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"
+                    Command="{x:Static local:Lib3DCommands.NetworkHideEquipNodeCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem 

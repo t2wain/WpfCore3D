@@ -6,7 +6,7 @@ Create a set of built-in 3D models then apply following transforms to each model
 - a random scale transform, and
 - a random rotation transform
 
-![WpfApp](./WpfApp.JPG)
+![HelixToolkit](./WpfCore3D.png)
 
 ## Actions in the Test Menu
 
@@ -47,3 +47,9 @@ A new random color is assigned to the model when they are selected.
 - {Left click on view cube} - change view
 - {Left double-click on view cube} - change to opposite view
 - {Scroll wheel} - Zooming
+
+## An Example of Real-World Application
+
+[Raceway Network in 3D View](./Raceway3D.md)
+
+![Raceway Network](./TrayNetwork3D.png)
