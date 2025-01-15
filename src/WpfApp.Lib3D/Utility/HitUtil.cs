@@ -51,41 +51,6 @@ namespace WpfApp.Lib3D.Utility
 
         #endregion
 
-        public static void FindLinePointHits(Viewport3D vp, Point point)
-        {
-            IList<Viewport3DHelper.HitResult> lstHitRes = vp.FindHits(point);
-            var lstHits = lstHitRes
-                .Where(res => res.Visual is ScreenSpaceVisual3D)
-                .OrderBy(r => r.Distance)
-                .ToList();
-
-            var lstIdx = new List<int>();
-            Visual3D? v = null;
-            Visual3D? vpar = null;
-            foreach(var res in lstHits.Take(1))
-            {
-                if (res.Visual is PointsVisual3D pv)
-                {
-                    v = pv;
-                    lstIdx = FindPointPos(res, pv.Points, 0);
-                    if (VisualTreeHelper.GetParent(pv) is NodeVisual3D nv) 
-                    { 
-                        vpar = nv; 
-                    }
-                }
-                else if (res.Visual is LinesVisual3D lv)
-                {
-                    v = lv;
-                    lstIdx = FindPointPos(res, lv.Points, 1);
-                    if (VisualTreeHelper.GetParent(lv) is RacewayVisual3D rv && lstIdx.Count > 0) 
-                    { 
-                        vpar = rv;
-                        rv.AddSelection(lv, lstIdx);
-                    }
-                }
-            }
-        }
-
         #region Test
 
         /// <summary>
@@ -133,117 +98,48 @@ namespace WpfApp.Lib3D.Utility
 
         #endregion
 
-        #region Mesh HitTest
+        #region Mesh hittest for ScreenVisual3D
 
-        /// <summary>
-        /// Assumption - every line has 2 pointd which generate triangles and assocation vertexes.
-        /// The hit result will return the vertexes of the hit trangle.
-        /// At least 2 vertex should equal the 2 line points.
-        /// The indexes of the 2 line point are related to the data for the line.
-        /// 
-        /// NOTE, THIS METHOD IS NOT FOOL-PROOF
-        /// 
-        /// </summary>
-        static List<int> FindPointPos(Viewport3DHelper.HitResult res, Point3DCollection visualPoints, int mode)
+        public static void FindLinePointHits(Viewport3D vp, Point point)
         {
-            var r = res.RayHit;
-            var phit = res.Position;
-            var pxcol = r.MeshHit.Positions;
-            var vxp1 = pxcol[r.VertexIndex1];
-            var vxp2 = pxcol[r.VertexIndex2];
-            var vxp3 = pxcol[r.VertexIndex3];
-
-            var _DIST_ = 0.5;
-
-            var qVisualPoint = visualPoints
-                .Select((vsp, i) => new
-                {
-                    VisualPoint = vsp, // visual point
-                    VisPointIndex = i, // index of the visual point
-                    // distance between vertex point and visual point
-                    Dist1 = (vsp - vxp1).Length,
-                    Dist2 = (vsp - vxp2).Length,
-                    Dist3 = (vsp - vxp3).Length
-                });
-
-            // determine which 3 vertexes best match to visual point
-            var qVisPoint2 = qVisualPoint.Select(i =>
-                {
-                    var vx = r.VertexIndex1;
-                    var d = i.Dist1;
-                    if (i.Dist2 < d)
-                    {
-                        vx = r.VertexIndex2;
-                        d = i.Dist2;
-                    }
-                    if (i.Dist3 < d)
-                    {
-                        vx = r.VertexIndex3;
-                        d = i.Dist3;
-                    }
-                    return new
-                    {
-                        i.VisualPoint,
-                        i.VisPointIndex,
-                        VertexIndex = vx,
-                        Dist = d
-                    };
-
-                })
-                // restrict visual point near the vertex point
-                .Where(i => i.Dist < _DIST_)
+            IList<Viewport3DHelper.HitResult> lstHitRes = vp.FindHits(point);
+            var lstHits = lstHitRes
+                .Where(res => res.Visual is ScreenSpaceVisual3D)
+                .OrderBy(r => r.Distance)
                 .ToList();
 
             var lstIdx = new List<int>();
-            // iterate through each visual points
-            foreach (var n in qVisPoint2)
+            Visual3D? v = null;
+            Visual3D? vpar = null;
+            foreach(var res in lstHits.Take(1))
             {
-                // Find point
-                if (mode == 0)
+                if (res.Visual is PointsVisual3D pv)
                 {
-                    lstIdx = new() { n.VisPointIndex };
-                    break;
+                    v = pv;
+                    lstIdx = FindPointPos(res);
+                    if (VisualTreeHelper.GetParent(pv) is NodeVisual3D nv) 
+                    { 
+                        vpar = nv; 
+                    }
                 }
-
-                // Get visual point index before current if exist
-                var nb = qVisPoint2.Where(i => i.VertexIndex != n.VertexIndex
-                        && i.Dist < 0.5
-                        && i.VisPointIndex == n.VisPointIndex - 1
-                    ).FirstOrDefault();
-                if (nb != null && CheckPoints(pxcol[n.VertexIndex], pxcol[nb.VertexIndex], phit))
+                else if (res.Visual is LinesVisual3D lv)
                 {
-                    // found consecutive index of the line selection
-                    lstIdx = new() { n.VisPointIndex, nb.VisPointIndex };
-                    break;
-                }
-
-                // Get visual point index after current if exist
-                var na = qVisPoint2.Where(i => i.VertexIndex != n.VertexIndex
-                        && i.Dist < 0.5
-                        && i.VisPointIndex == n.VisPointIndex + 1
-                    ).FirstOrDefault();
-                if (na != null && CheckPoints(pxcol[n.VertexIndex], pxcol[na.VertexIndex], phit))
-                {
-                    // found consecutive index of the line selection
-                    lstIdx = new() { n.VisPointIndex, na.VisPointIndex };
-                    break;
+                    v = lv;
+                    lstIdx = FindPointPos(res);
+                    if (VisualTreeHelper.GetParent(lv) is RacewayVisual3D rv && lstIdx.Count > 0) 
+                    { 
+                        vpar = rv;
+                        rv.AddSelection(lv, lstIdx);
+                    }
                 }
             }
-
-            return lstIdx;
         }
 
-        /// <summary>
-        /// Check that phit is between pvx1 and pvx2
-        /// </summary>
-        static bool CheckPoints(Point3D pvx1, Point3D pvx2, Point3D phit)
+        static List<int> FindPointPos(Viewport3DHelper.HitResult res)
         {
-            var l1 = (pvx1 - pvx2).Length;
-            var l2 = (pvx1 - phit).Length;
-            var l3 = (pvx2 - phit).Length;
-            return l2 < l1 && l3 < l1;
+            var r = res.RayHit;
+            return new() { r.VertexIndex1, r.VertexIndex2, r.VertexIndex3 };
         }
-
 
         /// <summary>
         /// Inspect hit result from Point Selection
@@ -312,6 +208,119 @@ namespace WpfApp.Lib3D.Utility
             var q3 = new Point3D(Math.Round(p3.X, rd), Math.Round(p3.Y, rd), Math.Round(p3.Z, rd));
 
             return new() { q1, q2, q3 };
+        }
+
+        #endregion
+
+        #region Abandon Mesh HitTest Algorithm
+
+        /// <summary>
+        /// Assumption - every line has 2 pointd which generate triangles and assocation vertexes.
+        /// The hit result will return the vertexes of the hit trangle.
+        /// At least 2 vertex should equal the 2 line points.
+        /// The indexes of the 2 line point are related to the data for the line.
+        /// 
+        /// NOTE, THIS METHOD IS NOT FOOL-PROOF
+        /// 
+        /// </summary>
+        static List<int> FindPointPosOld(Viewport3DHelper.HitResult res, Point3DCollection visualPoints, int mode)
+        {
+            var r = res.RayHit;
+            var phit = res.Position;
+            var pxcol = r.MeshHit.Positions;
+            var vxp1 = pxcol[r.VertexIndex1];
+            var vxp2 = pxcol[r.VertexIndex2];
+            var vxp3 = pxcol[r.VertexIndex3];
+
+            var _DIST_ = 0.5;
+
+            var qVisualPoint = visualPoints
+                .Select((vsp, i) => new
+                {
+                    VisualPoint = vsp, // visual point
+                    VisPointIndex = i, // index of the visual point
+                    // distance between vertex point and visual point
+                    Dist1 = (vsp - vxp1).Length,
+                    Dist2 = (vsp - vxp2).Length,
+                    Dist3 = (vsp - vxp3).Length
+                });
+
+            // determine which 3 vertexes best match to visual point
+            var qVisPoint2 = qVisualPoint.Select(i =>
+                {
+                    var vx = r.VertexIndex1;
+                    var d = i.Dist1;
+                    if (i.Dist2 < d)
+                    {
+                        vx = r.VertexIndex2;
+                        d = i.Dist2;
+                    }
+                    if (i.Dist3 < d)
+                    {
+                        vx = r.VertexIndex3;
+                        d = i.Dist3;
+                    }
+                    return new
+                    {
+                        i.VisualPoint,
+                        i.VisPointIndex,
+                        VertexIndex = vx,
+                        Dist = d
+                    };
+
+                })
+                // restrict visual point near the vertex point
+                .Where(i => i.Dist < _DIST_)
+                .ToList();
+
+            var lstIdx = new List<int>();
+            // iterate through each visual points
+            foreach (var n in qVisPoint2)
+            {
+                // Find point
+                if (mode == 0)
+                {
+                    lstIdx = new() { n.VisPointIndex };
+                    break;
+                }
+
+                // Get visual point index before current if exist
+                var nb = qVisPoint2.Where(i => i.VertexIndex != n.VertexIndex
+                        && i.Dist < 0.5
+                        && i.VisPointIndex == n.VisPointIndex - 1
+                    ).FirstOrDefault();
+                if (nb != null && CheckPointsOld(pxcol[n.VertexIndex], pxcol[nb.VertexIndex], phit))
+                {
+                    // found consecutive index of the line selection
+                    lstIdx = new() { n.VisPointIndex, nb.VisPointIndex };
+                    break;
+                }
+
+                // Get visual point index after current if exist
+                var na = qVisPoint2.Where(i => i.VertexIndex != n.VertexIndex
+                        && i.Dist < 0.5
+                        && i.VisPointIndex == n.VisPointIndex + 1
+                    ).FirstOrDefault();
+                if (na != null && CheckPointsOld(pxcol[n.VertexIndex], pxcol[na.VertexIndex], phit))
+                {
+                    // found consecutive index of the line selection
+                    lstIdx = new() { n.VisPointIndex, na.VisPointIndex };
+                    break;
+                }
+            }
+
+            return lstIdx;
+        }
+
+        /// <summary>
+        /// Check that phit is between pvx1 and pvx2
+        /// </summary>
+        static bool CheckPointsOld(Point3D pvx1, Point3D pvx2, Point3D phit)
+        {
+            var l1 = (pvx1 - pvx2).Length;
+            var l2 = (pvx1 - phit).Length;
+            var l3 = (pvx2 - phit).Length;
+            return l2 < l1 && l3 < l1;
         }
 
         #endregion

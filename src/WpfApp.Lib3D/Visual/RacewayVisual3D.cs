@@ -36,6 +36,12 @@ namespace WpfApp.Lib3D.Visual
 
         public List<Raceway> DropRW { get; protected set; } = new();
 
+        public Dictionary<int, int> TrayRWVertex { get; set; } = new();
+
+        public Dictionary<int, int> JumpRWVertex { get; set; } = new();
+
+        public Dictionary<int, int> DropRWVertex { get; set; } = new();
+
         #endregion
 
         #region Visuals
@@ -74,34 +80,37 @@ namespace WpfApp.Lib3D.Visual
         #region Selection
 
         public Dictionary<int, Raceway> SelectRW { get; protected set; } = new();
+        public Dictionary<int, int> SelectRWVertex { get; set; } = new();
 
         /// <summary>
         /// Selection layer
         /// </summary>
         public LinesVisual3D SelectVisual { get; protected set; } = new() { Color = Colors.Magenta, Thickness = 3 };
 
-        public void AddSelection(LinesVisual3D selectVis, List<int> pointIndexes)
+        public void AddSelection(LinesVisual3D selectVis, List<int> pointVertex)
         {
-            // expecting 2 even and odd indexes
-            // use even index to determine the data
-            var idx = pointIndexes.Where(i => i % 2 == 0).First() / 2;
-
             // retrieve the rw data by index
             Raceway? rw = null;
             if (selectVis.Equals(TrayVisual))
             {
+                var idx = this.TrayRWVertex[pointVertex[0]];
                 rw = this.TrayRW[idx];
+                //rw = this.TrayRW[idx];
+                //rw = rw1;
             }
             else if (selectVis.Equals(JumpVisual))
             {
+                var idx = this.JumpRWVertex[pointVertex[0]];
                 rw = this.JumpRW[idx];
             }
             else if (selectVis.Equals(DropVisual)) 
             {
+                var idx = this.DropRWVertex[pointVertex[0]];
                 rw = this.DropRW[idx];
             }
             else if (selectVis.Equals(selectVis))
             {
+                var idx = this.SelectRWVertex[pointVertex[0]];
                 rw = this.SelectRW.Values
                     .Select((r, i) => (r, i))
                     .Where(j => j.i == idx)
@@ -168,17 +177,40 @@ namespace WpfApp.Lib3D.Visual
         {
             TrayRW = this.Raceways.GetTray().ToList();
             this.TrayVisual.Points = NetworkTest.GetLinePoints(TrayRW);
+            this.TrayRWVertex = CreateIndices(this.TrayVisual.Points.Count);
 
             JumpRW = this.Raceways.GetJump().ToList();
             this.JumpVisual.Points = NetworkTest.GetLinePoints(JumpRW);
+            this.JumpRWVertex = CreateIndices(this.JumpVisual.Points.Count);
 
             DropRW = this.Raceways.GetDrop().ToList();
             this.DropVisual.Points = NetworkTest.GetLinePoints(DropRW);
+            this.DropRWVertex = CreateIndices(this.DropVisual.Points.Count);
+        }
+
+        /// <summary>
+        /// Triangular indexes for LineVisual3D from HelixToolkit source code
+        /// </summary>
+        Dictionary<int, int> CreateIndices(int n)
+        {
+            var d = new Dictionary<int, int>();
+            for (int i = 0; i < n / 2; i++)
+            {
+                var i4 = i * 4;
+                var lstIdx = new List<int> { i4 + 0, i4 + 1, i4 + 2, i4 + 3 };
+                lstIdx.Aggregate(d, (a, v) =>
+                {
+                    a.Add(v, i);
+                    return a;
+                });
+            }
+            return d;
         }
 
         public void BuildMeshSelection()
         {
             this.SelectVisual.Points = NetworkTest.GetLinePoints(SelectRW.Values);
+            this.SelectRWVertex = CreateIndices(this.SelectVisual.Points.Count);
         }
 
         #endregion
