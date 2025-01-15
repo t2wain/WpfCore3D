@@ -9,6 +9,7 @@ In engineering, we need to route cables between two equipments along the cable t
 - Tray - white line, which is a physical tray to be installed
 - Jump - green line, which defines an abstract path between physical trays even when these trays are not physically connected
 - Drop - yellow line, which defines an abstract path where cables between from/to equipments can enter/leave the physical trays
+- Selection - magenta line, which highlight selected raceway using left mouse click
 
 ## Type of Points
 

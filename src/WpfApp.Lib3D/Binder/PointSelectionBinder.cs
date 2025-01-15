@@ -1,6 +1,5 @@
 ﻿using HelixToolkit.Wpf;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using WpfApp.Lib3D.Utility;
@@ -31,7 +30,7 @@ namespace WpfApp.Lib3D.Binder
 
         protected virtual void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if ((this.IsRectangleSelectionEnabled || this.IsPointSelectionEnabled) 
+            if (this.IsSelectionEnabled
                 && e.LeftButton == MouseButtonState.Pressed)
             {
                 RunHitSelection(e.GetPosition(this._vp));
@@ -50,15 +49,25 @@ namespace WpfApp.Lib3D.Binder
                 if (v != null)
                     OnVisualSelected([v]);
             }
+            else if (this.IsMeshPointSelectionEnabled) 
+            { 
+                HitUtil.FindLinePointHits(this._vp.Viewport, p);
+            }
         }
 
         #endregion
 
         #region Selection
 
+        public bool IsSelectionEnabled => this.IsRectangleSelectionEnabled 
+            || this.IsPointSelectionEnabled 
+            || this.IsMeshPointSelectionEnabled;
+
         public bool IsPointSelectionEnabled { get; set; }
 
         public bool IsRectangleSelectionEnabled { get; set; }
+
+        public bool IsMeshPointSelectionEnabled { get; set; }
 
         protected virtual void OnVisualSelected(IEnumerable<Visual3D> lstVisuals)
         {

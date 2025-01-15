@@ -13,6 +13,7 @@ namespace WpfApp.Lib3D.Visual
             public bool HideTray { get; set; }
             public bool HideJump { get; set; }
             public bool HideDrop { get; set; }
+            public bool HideSelection { get; set; }
         }
 
         public RacewayVisual3D() : this(new()) { }
@@ -22,27 +23,39 @@ namespace WpfApp.Lib3D.Visual
             this.UpdateView(setting);
         }
 
+        #region Raceway data
+
         /// <summary>
         /// Raceway data
         /// </summary>
         public IEnumerable<Raceway> Raceways { get; set; } = [];
+
+        public List<Raceway> TrayRW { get; protected set; } = new();
+
+        public List<Raceway> JumpRW { get; protected set; } = new();
+
+        public List<Raceway> DropRW { get; protected set; } = new();
+
+        #endregion
+
+        #region Visuals
 
         protected Dictionary<string, LinesVisual3D> Visuals { get; set; } = new();
 
         /// <summary>
         /// Tray layer
         /// </summary>
-        public LinesVisual3D TrayVisual { get; protected set; } = new() { Color = Colors.DarkGray };
+        public LinesVisual3D TrayVisual { get; protected set; } = new() { Color = Colors.DarkGray, Thickness = 2 };
 
         /// <summary>
         /// Jump layer
         /// </summary>
-        public LinesVisual3D JumpVisual { get; protected set; } = new() { Color = Colors.LightGreen };
+        public LinesVisual3D JumpVisual { get; protected set; } = new() { Color = Colors.LightGreen, Thickness = 2 };
 
         /// <summary>
         /// Drop layer
         /// </summary>
-        public LinesVisual3D DropVisual { get; protected set; } = new() { Color = Colors.Yellow };
+        public LinesVisual3D DropVisual { get; protected set; } = new() { Color = Colors.Yellow, Thickness = 2 };
 
         protected LinesVisual3D AddLineVisual(string name)
         {
@@ -55,6 +68,65 @@ namespace WpfApp.Lib3D.Visual
             }
             return l;
         }
+
+        #endregion
+
+        #region Selection
+
+        public Dictionary<int, Raceway> SelectRW { get; protected set; } = new();
+
+        /// <summary>
+        /// Selection layer
+        /// </summary>
+        public LinesVisual3D SelectVisual { get; protected set; } = new() { Color = Colors.Magenta, Thickness = 3 };
+
+        public void AddSelection(LinesVisual3D selectVis, List<int> pointIndexes)
+        {
+            // expecting 2 even and odd indexes
+            // use even index to determine the data
+            var idx = pointIndexes.Where(i => i % 2 == 0).First() / 2;
+
+            // retrieve the rw data by index
+            Raceway? rw = null;
+            if (selectVis.Equals(TrayVisual))
+            {
+                rw = this.TrayRW[idx];
+            }
+            else if (selectVis.Equals(JumpVisual))
+            {
+                rw = this.JumpRW[idx];
+            }
+            else if (selectVis.Equals(DropVisual)) 
+            {
+                rw = this.DropRW[idx];
+            }
+            else if (selectVis.Equals(selectVis))
+            {
+                rw = this.SelectRW.Values
+                    .Select((r, i) => (r, i))
+                    .Where(j => j.i == idx)
+                    .Select(i => i.r)
+                    .FirstOrDefault();
+            }
+
+            if (rw != null)
+            {
+                if (this.SelectRW.ContainsKey(rw.ID))
+                    this.SelectRW.Remove(rw.ID); // unselect
+                else this.SelectRW.Add(rw.ID, rw); // select
+                this.BuildMeshSelection(); // update visual
+            }
+        }
+
+        public void ClearSelection()
+        {
+            this.SelectRW.Clear();
+            this.BuildMeshSelection();
+        }
+
+        #endregion
+
+        #region View
 
         /// <summary>
         /// Hide / show the displays of raceway laters
@@ -75,6 +147,11 @@ namespace WpfApp.Lib3D.Visual
                 this.Children.Remove(this.DropVisual);
             else if (!setting.HideDrop && !this.DropVisual.IsAttachedToViewport3D())
                 this.Children.Add(this.DropVisual);
+
+            if (setting.HideSelection && this.SelectVisual.IsAttachedToViewport3D())
+                this.Children.Remove(this.SelectVisual);
+            else if (!setting.HideSelection && !this.SelectVisual.IsAttachedToViewport3D())
+                this.Children.Add(this.SelectVisual);
         }
 
         public void ClearMesh()
@@ -89,14 +166,21 @@ namespace WpfApp.Lib3D.Visual
         /// </summary>
         public void BuildMesh()
         {
-            var t = this.Raceways.GetTray();
-            this.TrayVisual.Points = NetworkTest.GetLinePoints(t);
+            TrayRW = this.Raceways.GetTray().ToList();
+            this.TrayVisual.Points = NetworkTest.GetLinePoints(TrayRW);
 
-            t = this.Raceways.GetJump();
-            this.JumpVisual.Points = NetworkTest.GetLinePoints(t);
+            JumpRW = this.Raceways.GetJump().ToList();
+            this.JumpVisual.Points = NetworkTest.GetLinePoints(JumpRW);
 
-            t = this.Raceways.GetDrop();
-            this.DropVisual.Points = NetworkTest.GetLinePoints(t);
+            DropRW = this.Raceways.GetDrop().ToList();
+            this.DropVisual.Points = NetworkTest.GetLinePoints(DropRW);
         }
+
+        public void BuildMeshSelection()
+        {
+            this.SelectVisual.Points = NetworkTest.GetLinePoints(SelectRW.Values);
+        }
+
+        #endregion
     }
 }

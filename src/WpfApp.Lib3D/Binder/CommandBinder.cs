@@ -56,6 +56,7 @@ namespace WpfApp.Lib3D.Binder
                 new CommandBinding(Lib3DCommands.ZoomExtentCommand, this.OnZoomExtent, this.OnShuffleCanExecute),
                 new CommandBinding(Lib3DCommands.TogglePointSelectionCommand, this.OnTogglePointSelection, this.OnShuffleCanExecute),
                 new CommandBinding(Lib3DCommands.ToggleRectangleSelectionCommand, this.OnToggleRectangleSection, this.OnShuffleCanExecute),
+                new CommandBinding(Lib3DCommands.ToggleMeshPointSelectionCommand, this.OnToggleMeshPointSelection, this.OnShuffleCanExecute),
 
                 // Network commands
                 new CommandBinding(Lib3DCommands.LoadNetworkCommand, this.OnLoadNetwork),
@@ -64,6 +65,8 @@ namespace WpfApp.Lib3D.Binder
                 new CommandBinding(Lib3DCommands.NetworkHideDropCommand, this.OnHideDrop, this.OnNetworkCommandCanExecute),
                 new CommandBinding(Lib3DCommands.NetworkHideTrayNodeCommand, this.OnHideTrayNode, this.OnNetworkCommandCanExecute),
                 new CommandBinding(Lib3DCommands.NetworkHideEquipNodeCommand, this.OnHideEquipmentNode, this.OnNetworkCommandCanExecute),
+
+                new CommandBinding(Lib3DCommands.NetworkClearSelectionCommand, this.OnClearSelection, this.OnClearSelectionCanExecute),
             };
 
             foreach (var c in lst)
@@ -91,6 +94,9 @@ namespace WpfApp.Lib3D.Binder
         virtual protected void OnToggleRectangleSection(object sender, ExecutedRoutedEventArgs e) =>
             this._selBinder.IsRectangleSelectionEnabled = (bool)e.Parameter;
 
+        virtual protected void OnToggleMeshPointSelection(object sender, ExecutedRoutedEventArgs e) =>
+            this._selBinder.IsMeshPointSelectionEnabled = (bool)e.Parameter;
+
         #endregion
 
         #region Network Command
@@ -98,6 +104,7 @@ namespace WpfApp.Lib3D.Binder
         virtual protected void OnLoadNetwork(object sender, RoutedEventArgs e)
         {
             this.LoadNetwork();
+            //this.LoadTestNetwork();
             UpdateNetworkView();
         }
 
@@ -133,6 +140,14 @@ namespace WpfApp.Lib3D.Binder
 
         virtual protected void OnNetworkCommandCanExecute(object sender, CanExecuteRoutedEventArgs e) =>
             e.CanExecute = this.NetworkVisual != null && this.NetworkVisual.IsAttachedToViewport3D();
+
+        virtual protected void OnClearSelection(object sender, RoutedEventArgs e) =>
+            this.GetRacewayVisual()?.ClearSelection();
+
+        virtual protected void OnClearSelectionCanExecute(object sender, CanExecuteRoutedEventArgs e) =>
+            e.CanExecute = this.NetworkVisual != null
+                && this.NetworkVisual.IsAttachedToViewport3D()
+                && this.GetRacewayVisual()?.SelectRW.Count > 0;
 
         #endregion
 
@@ -201,11 +216,26 @@ namespace WpfApp.Lib3D.Binder
             this.ZoomExtent();
         }
 
+        protected void LoadTestNetwork()
+        {
+            this.ClearVisuals();
+            this._vp.Background = Brushes.Black;
+            NetworkVisual = NetworkTest.BuildSimpleNetWork();
+            this.Current.Children.Add(NetworkVisual);
+            this.ZoomExtent();
+        }
+
         protected void AddVisuals(Visual3DCollection col, IEnumerable<Visual3D> visuals)
         {
             foreach (var v in visuals)
                 col.Add(v);
         }
+
+        public RacewayVisual3D? GetRacewayVisual() => 
+            this.NetworkVisual?.Children
+                .Where(v => v is RacewayVisual3D)
+                .Cast<RacewayVisual3D>()
+                .FirstOrDefault();
 
         #endregion
 

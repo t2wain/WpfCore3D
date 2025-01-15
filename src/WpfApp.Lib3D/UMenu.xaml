@@ -46,6 +46,9 @@
                     IsCheckable="True" 
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"
                     Command="{x:Static local:Lib3DCommands.NetworkHideEquipNodeCommand}"></MenuItem>
+                <Separator />
+                <MenuItem 
+                    Command="{x:Static local:Lib3DCommands.NetworkClearSelectionCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem 
@@ -59,6 +62,10 @@
                 <MenuItem 
                     IsCheckable="True" 
                     Command="{x:Static local:Lib3DCommands.ToggleRectangleSelectionCommand}" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"></MenuItem>
+                <MenuItem 
+                    IsCheckable="True" 
+                    Command="{x:Static local:Lib3DCommands.ToggleMeshPointSelectionCommand}" 
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked, Mode=OneWay}"></MenuItem>
             </MenuItem>
         </Menu>

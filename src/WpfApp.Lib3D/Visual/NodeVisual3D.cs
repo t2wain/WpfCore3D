@@ -36,12 +36,12 @@ namespace WpfApp.Lib3D.Visual
         /// <summary>
         /// Raceway node layer
         /// </summary>
-        public PointsVisual3D RacewayNodeVisual { get; protected set; } = new() { Size = 3, Color = Colors.Gray };
+        public PointsVisual3D RacewayNodeVisual { get; protected set; } = new() { Size = 5, Color = Colors.Gray };
 
         /// <summary>
         /// Equipment node layer
         /// </summary>
-        public PointsVisual3D EquipNodeVisual { get; protected set; } = new() { Size = 3, Color = Colors.DarkRed };
+        public PointsVisual3D EquipNodeVisual { get; protected set; } = new() { Size = 5, Color = Colors.DarkRed };
 
         protected PointsVisual3D AddPointVisual(string name)
         {

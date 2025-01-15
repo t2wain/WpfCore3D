@@ -49,6 +49,36 @@ namespace WpfApp.Lib3D.Test
             return m;
         }
 
+        public static ModelVisual3D BuildSimpleNetWork()
+        {
+            var v = new Vector3D(1, 1, 1);
+            v.Normalize();
+            v = v * 50;
+            var pcol = new Point3DCollection([
+                new Point3D { X = 0, Y = 0, Z = 0 }, 
+                (Point3D)v
+            ]);
+
+            var rw = new LinesVisual3D()
+            {
+                Points = pcol.Clone(),
+                Color = Colors.DarkGray,
+                Thickness = 2
+            };
+
+            var nd = new PointsVisual3D 
+            { 
+                Points = pcol.Clone(), 
+                Size = 3, 
+                Color = Colors.LightGray 
+            };
+
+            var m = new ModelVisual3D();
+            m.Children.Add(rw);
+            m.Children.Add(nd);
+            return m;
+        }
+
         #endregion
 
         #region Point collection
@@ -182,6 +212,5 @@ namespace WpfApp.Lib3D.Test
             });
 
         #endregion
-
     }
 }

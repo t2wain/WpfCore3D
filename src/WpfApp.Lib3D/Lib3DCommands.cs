@@ -12,6 +12,7 @@ namespace WpfApp.Lib3D
             ZoomExtentCommand = new RoutedUICommand("Zoom Extent", "Lib3D.ZoomExtent", typeof(Lib3DCommands));
             TogglePointSelectionCommand = new RoutedUICommand("Point Selection", "Lib3D.TogglePointSelection", typeof(Lib3DCommands));
             ToggleRectangleSelectionCommand = new RoutedUICommand("Rectangle Selection", "Lib3D.ToggleRectangleSelection", typeof(Lib3DCommands));
+            ToggleMeshPointSelectionCommand = new RoutedUICommand("Mesh Point Selection", "Lib3D.ToggleMeshPointSelection", typeof(Lib3DCommands));
 
 
             LoadNetworkCommand = new RoutedUICommand("Load Network", "Lib3D.LoadNetwork", typeof(Lib3DCommands));
@@ -20,6 +21,7 @@ namespace WpfApp.Lib3D
             NetworkHideDropCommand = new RoutedUICommand("Hide Drop", "Lib3D.HideDrop", typeof(Lib3DCommands));
             NetworkHideTrayNodeCommand = new RoutedUICommand("Hide Tray Node", "Lib3D.HideTrayNode", typeof(Lib3DCommands));
             NetworkHideEquipNodeCommand = new RoutedUICommand("Hide Equipment Node", "Lib3D.HideEquipNode", typeof(Lib3DCommands));
+            NetworkClearSelectionCommand = new RoutedUICommand("Clear Selection", "Lib3D.ClearSelection", typeof(Lib3DCommands));
         }
 
         public static readonly RoutedUICommand GenerateVisualCommand = null!;
@@ -34,6 +36,9 @@ namespace WpfApp.Lib3D
 
         public static readonly RoutedUICommand ToggleRectangleSelectionCommand = null!;
 
+        public static readonly RoutedUICommand ToggleMeshPointSelectionCommand = null!;
+
+
         public static readonly RoutedUICommand LoadNetworkCommand = null!;
 
         public static readonly RoutedUICommand NetworkHideTrayCommand = null!;
@@ -45,6 +50,8 @@ namespace WpfApp.Lib3D
         public static readonly RoutedUICommand NetworkHideTrayNodeCommand = null!;
 
         public static readonly RoutedUICommand NetworkHideEquipNodeCommand = null!;
+
+        public static readonly RoutedUICommand NetworkClearSelectionCommand = null!;
 
     }
 }
