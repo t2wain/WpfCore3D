@@ -28,7 +28,12 @@ namespace WpfApp.Lib3D.Visual
         /// <summary>
         /// Raceway data
         /// </summary>
-        public IEnumerable<Raceway> Raceways { get; set; } = [];
+        public void SetRaceways(IEnumerable<Raceway> raceways)
+        {
+            TrayRW = raceways.GetTray().ToList();
+            JumpRW = raceways.GetJump().ToList();
+            DropRW = raceways.GetDrop().ToList();
+        }
 
         public List<Raceway> TrayRW { get; protected set; } = new();
 
@@ -74,7 +79,6 @@ namespace WpfApp.Lib3D.Visual
         #region Selection
 
         public Dictionary<int, Raceway> SelectRW { get; protected set; } = new();
-        public Dictionary<int, int> SelectRWVertex { get; set; } = new();
 
         /// <summary>
         /// Selection layer
@@ -134,32 +138,18 @@ namespace WpfApp.Lib3D.Visual
         /// </summary>
         public void UpdateView(ViewSetting setting)
         {
-            if (setting.HideTray && this.TrayVisual.IsAttachedToViewport3D())
-                this.Children.Remove(this.TrayVisual);
-            else if (!setting.HideTray && !this.TrayVisual.IsAttachedToViewport3D())
-                this.Children.Add(this.TrayVisual);
-
-            if (setting.HideJump && this.JumpVisual.IsAttachedToViewport3D())
-                this.Children.Remove(this.JumpVisual);
-            else if (!setting.HideJump && !this.JumpVisual.IsAttachedToViewport3D())
-                this.Children.Add(this.JumpVisual);
-
-            if (setting.HideDrop && this.DropVisual.IsAttachedToViewport3D())
-                this.Children.Remove(this.DropVisual);
-            else if (!setting.HideDrop && !this.DropVisual.IsAttachedToViewport3D())
-                this.Children.Add(this.DropVisual);
-
-            if (setting.HideSelection && this.SelectVisual.IsAttachedToViewport3D())
-                this.Children.Remove(this.SelectVisual);
-            else if (!setting.HideSelection && !this.SelectVisual.IsAttachedToViewport3D())
-                this.Children.Add(this.SelectVisual);
+            UpdateView(this.TrayVisual, setting.HideTray);
+            UpdateView(this.JumpVisual, setting.HideJump);
+            UpdateView(this.DropVisual, setting.HideDrop);
+            UpdateView(this.SelectVisual, setting.HideSelection);
         }
 
-        public void ClearMesh()
+        protected void UpdateView(Visual3D v, bool ishide)
         {
-            this.TrayVisual.Points.Clear();
-            this.JumpVisual.Points.Clear();
-            this.DropVisual.Points.Clear();
+            if (ishide && v.IsAttachedToViewport3D())
+                this.Children.Remove(v);
+            else if (!ishide && !v.IsAttachedToViewport3D())
+                this.Children.Add(v);
         }
 
         /// <summary>
@@ -167,13 +157,8 @@ namespace WpfApp.Lib3D.Visual
         /// </summary>
         public void BuildMesh()
         {
-            TrayRW = this.Raceways.GetTray().ToList();
             this.TrayVisual.Points = NetworkTest.GetLinePoints(TrayRW);
-
-            JumpRW = this.Raceways.GetJump().ToList();
             this.JumpVisual.Points = NetworkTest.GetLinePoints(JumpRW);
-
-            DropRW = this.Raceways.GetDrop().ToList();
             this.DropVisual.Points = NetworkTest.GetLinePoints(DropRW);
         }
 

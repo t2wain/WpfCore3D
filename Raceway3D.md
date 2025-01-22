@@ -37,3 +37,7 @@ This example is based on a real-world application I have implemented for electri
 ## Overlay Other 3D Models
 
 Small set of other 3D models, such as buildings and walls, can be exported from plant design CAD software and imported into the application to provide context surrounding the raceway network.
+
+## About the Example
+
+Note, this example does not contain any raceway data files to run the example. The raceway network image above is rendered by this example using raceway data from a real project. However, that data is not include with this example. You can refer to the source code for more information about the type of data needed for this example.

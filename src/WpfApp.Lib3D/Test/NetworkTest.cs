@@ -155,7 +155,7 @@ namespace WpfApp.Lib3D.Test
         public static RacewayVisual3D BuildRacewaysVisual3D(IEnumerable<Raceway> raceways)
         {
             var v = new RacewayVisual3D();
-            v.Raceways = raceways;
+            v.SetRaceways(raceways);
             v.BuildMesh();
             return v;
         }

@@ -17,6 +17,7 @@ namespace WpfApp.Lib3D.Binder
         private HelixViewport3D _vp = null!;
         private PointSelectionBinder _selBinder = null!;
         string? _rwDataFolder = null;
+        int _segSystemId = 0;
 
         public CommandBinder(HelixViewport3D vp)
         {
@@ -34,6 +35,7 @@ namespace WpfApp.Lib3D.Binder
                 cb.AddJsonFile(fn);
                 var root = cb.Build();
                 this._rwDataFolder = root["RacewayDataFolder"];
+                this._segSystemId = Convert.ToInt32(root["SegSystemFilter"]);
             }
             else this._rwDataFolder = "";
 
@@ -207,10 +209,10 @@ namespace WpfApp.Lib3D.Binder
             var d = NetworkDB.LoadData(GetDataConfig());
             var r = d.Raceways
                 .Where(r => r.CalcLength() < 1000)
-                .SelectSystem(6)
+                .SelectSystem(this._segSystemId)
                 .ToList();
             NetworkVisual = NetworkTest.BuildNetwork(r,
-                d.Cables.Where(c => c.SegSystem == 6).ToList(),
+                d.Cables.Where(c => this._segSystemId == 0 || c.SegSystem == this._segSystemId).ToList(),
                 d.Nodes);
             this.Current.Children.Add(NetworkVisual);
             this.ZoomExtent();

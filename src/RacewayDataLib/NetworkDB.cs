@@ -43,7 +43,7 @@ namespace RacewayDataLib
         /// Filter raceway
         /// </summary>
         public static IEnumerable<Raceway> SelectSystem(this IEnumerable<Raceway> raceways, int sysId) =>
-            raceways.Where(r => r.Systems.Contains(sysId));
+            raceways.Where(r => sysId == 0 || r.Systems.Contains(sysId));
 
         #endregion
 
